@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ProductManager = require('../ProductManager');
-const producto = new ProductManager('./archivo.json');
+const producto = new ProductManager('./productos.json');
 
 
 
@@ -36,8 +36,8 @@ router.delete('/products/:pid/', async (req, res) => {
 });
 
 
-router.post('/products', (req, res) => {
-    const handled = producto.handlePostRequest(req,res);
+router.post('/products', async (req, res) => {
+    const handled = await producto.handlePostRequest(req,res);
     const data = req.body;
     if (handled[0] == false) {
         res.status(400).json({ error: handled[1].details[0].message}) 

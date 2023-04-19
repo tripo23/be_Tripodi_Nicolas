@@ -1,7 +1,6 @@
 const fs = require('fs');
 const joi = require('joi');
 class ProductManager {
-    static ultimoId = 1;
     static notFound = 'Producto no existe';
 
     constructor(path) {
@@ -129,10 +128,15 @@ class ProductManager {
 
     idGenerator = async () => {
         try {
+            let newID;
             await this.load();
-            const length = this.products.length;
-            const lastID = this.products[length-1].id;
-            const newID = parseInt(lastID+1);
+            if (this.products.length > 0) {
+                const length = this.products.length;
+                const lastID = this.products[length-1].id;
+                newID = parseInt(lastID+1);
+            } else {
+                newID = 1;
+            }
             return newID;
         } catch (err){
             console.log(err);
