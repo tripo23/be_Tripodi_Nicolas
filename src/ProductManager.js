@@ -13,7 +13,7 @@ class ProductManager {
             code: joi.string().required(),
             stock: joi.number().required(),
             status: joi.boolean().required(),
-            thumbnail: joi.string().optional(),
+            thumbnails: joi.array().optional(),
             category: joi.string().required()
         });
     }
@@ -47,7 +47,7 @@ class ProductManager {
                     description: objProduct.description,
                     price: objProduct.price,
                     status: objProduct.status || true,
-                    thumbnail: objProduct.thumbnail,
+                    thumbnails: objProduct.thumbnails,
                     code: objProduct.code,
                     stock: objProduct.stock,
                     category: objProduct.category
@@ -89,8 +89,15 @@ class ProductManager {
         try {
             await this.load();
             const productToUpdate = await this.getProductById(id);
-            productToUpdate[data.property] = data.value;
+            const props = Object.keys(data);
+            props.forEach(prop => {
+                if (productToUpdate.hasOwnProperty(prop)) {
+                    productToUpdate[prop] = data[prop];
+                }
+            })
+           
             await this.save();
+            console.log(productToUpdate);
             console.log('Producto actualizado.');
         } catch (error) {
             console.log(error);
@@ -100,8 +107,7 @@ class ProductManager {
     deleteProduct = async (id) => {
         try {
             await this.load();
-            this.products = this.products.filter((product) => parseInt(product.id) !== id);
-            console.log(this.products);
+            this.products = this.products.filter((product) => parseInt(product.id) !== parseInt(id));
             console.log('Producto eliminado.');
             await this.save();
         } catch (err) {

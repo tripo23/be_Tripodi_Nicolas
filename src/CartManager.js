@@ -1,14 +1,13 @@
 const fs = require('fs');
-
 class CartManager {
 
-    static notFound = "Not found";
+    static notFound = "err";
     constructor(path) {
         this.path = path;
         this.cart = [];
     }
 
-    newCart = async (data) => {     
+    newCart = async (data) => {
         const generatedID = await this.idGenerator();
         const newCart = {
             id: generatedID,
@@ -31,20 +30,23 @@ class CartManager {
     addProductToCart = async (data) => {
        try {
             const cartToUpdate = await this.getCartByID(data.cid); // que pasa si me trae un id que no es?
-            console.log(cartToUpdate);
-            const productToUpdate = cartToUpdate.products.find(product => product.pid === parseInt(data.pid));
-
-            if (productToUpdate) {
-                productToUpdate.quantity = productToUpdate.quantity + parseInt(data.quantity);
-                console.log(productToUpdate);
+            if (cartToUpdate == CartManager.notFound) {
+                return 'err'
             } else {
-                const newProduct = {
-                    pid: parseInt(data.pid),
-                    quantity: data.quantity
+                const productToUpdate = cartToUpdate.products.find(product => product.pid === parseInt(data.pid));
+                if (productToUpdate) {
+                    productToUpdate.quantity = productToUpdate.quantity + parseInt(data.quantity);
+                    console.log(productToUpdate);
+                } else {
+                    const newProduct = {
+                        pid: parseInt(data.pid),
+                        quantity: data.quantity
+                    }
+                    cartToUpdate.products.push(newProduct);
                 }
-                cartToUpdate.products.push(newProduct);
+                await this.save();
             }
-            await this.save();
+            
        } catch (error) {
             console.log(error);
        }
@@ -61,7 +63,6 @@ class CartManager {
                 const length = this.cart.length;
                 const lastID = this.cart[length-1].id;
                 newID = parseInt(lastID+1);
-                console.log(newID);
             }
             return newID;    
         }   
