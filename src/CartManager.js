@@ -7,11 +7,11 @@ class CartManager {
         this.cart = [];
     }
 
-    newCart = async (data) => {
+    newCart = async () => {
         const generatedID = await this.idGenerator();
         const newCart = {
             id: generatedID,
-            products: data
+            products: []
         };
         this.cart.push(newCart);
         await this.save();
@@ -29,7 +29,7 @@ class CartManager {
 
     addProductToCart = async (data) => {
        try {
-            const cartToUpdate = await this.getCartByID(data.cid); // que pasa si me trae un id que no es?
+            const cartToUpdate = await this.getCartByID(data.cid);
             if (cartToUpdate == CartManager.notFound) {
                 return 'err'
             } else {
