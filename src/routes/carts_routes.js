@@ -4,8 +4,9 @@ const CartManager = require('../CartManager');
 const cart = new CartManager('./carrito.json');
 
 router.post('/carts', async (req,res) => {
-    await cart.newCart();
-    res.status(200).json({message: 'Carrito enviado'});
+    const cartID = await cart.newCart();
+    const message = `Carrito enviado con id  ${cartID}`;
+    res.status(200).json({message, cartID});
 });
 
 router.get('/carts/:cid', async (req, res) => {

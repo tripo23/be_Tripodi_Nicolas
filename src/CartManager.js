@@ -15,6 +15,7 @@ class CartManager {
         };
         this.cart.push(newCart);
         await this.save();
+        return generatedID;
     }
 
     getCartByID = async (id) => {
