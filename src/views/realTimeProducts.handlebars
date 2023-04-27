@@ -1,0 +1,107 @@
+<div>
+    <div>
+        <h1>Esto es real time</h1>
+    </div>
+
+    <div>
+        <h1>Add a product</h1>
+
+        <form action="realtimeproducts" method="POST" id="addProductForm" onsubmit="addLiveProduct">
+            Title: <input type="text" name="title">
+            Price: <input type="number" name="price">
+            Code: <input type="text" name="code">
+            Stock: <input type="number" name="stock">
+            Description: <input type="text" name="description">
+            Thumbnail: <input type="text" name="thumbnail">
+            Category: <input type="text" name="category">
+            <button>Add</button>
+        </form>
+
+    </div>
+</div>
+
+<div>
+    <h1>Delete a product</h1>
+    <h1></h1>
+    <form action="realtimeproducts?method=DELETE" method="POST">
+      ID: <input type="number" name="id">
+      <button>Delete</button>
+    </form>
+</div>
+
+    <div>
+           <table id="prodsLiveTable">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Code</th>
+            <th>Stock</th>
+            <th>Description</th>
+            <th>Thumbnail</th>
+            <th>Category</th>
+        </tr>
+        <ul>
+            {{#each productos}}
+            <tr>
+                <td>{{this.id}}</td>
+                <td>{{this.title}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.code}}</td>
+                <td>{{this.stock}}</td>
+                <td>{{this.description}}</td>
+                <td><img src={{this.thumbnail}} alt={{this.thumbnail}}></td>
+                <td>{{this.category}}</td>
+            </tr>
+            {{/each}}
+
+        </ul>
+                <div id="productos">
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+<script>
+
+    const ws = io('http://localhost:8080', { forceNew: true });
+
+    function addProduct(e) {
+    const product = {
+        title: document.getElementById("title").value,
+        price: document.getElementById("price").value,
+        code: document.getElementById("code").value,
+        stock: document.getElementById("stock").value,
+        description: document.getElementById("description").value,
+        thumbnails: document.getElementById("thumbnail").value,
+        category: document.getElementById("category").value
+    }
+
+    socket.emit("addProduct", product)
+    return false
+}
+
+    function render(dataProduct) {
+        const html = dataProduct.map((item, index) => {
+            return(`<tr>
+                <td>${item.id}</td>
+                <td>${item.title}</td>
+                <td>${item.price}</td>
+                <td>${item.code}</td>
+                <td>${item.stock}</td>
+                <td>${item.description}</td>
+                <td>${item.thumbnail}</td>
+            </tr>`)
+        }).join(" ")
+
+        document.getElementById("productos").innerHTML = html;
+    }
+
+    ws.on("addProduct", function(newProduct) {render(newProduct)})
+
+
+</script>

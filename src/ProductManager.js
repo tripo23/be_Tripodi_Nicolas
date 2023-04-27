@@ -1,20 +1,21 @@
-const fs = require('fs');
-const joi = require('joi');
+import fs from 'fs';
+import Joi from 'joi';
+
 class ProductManager {
     static notFound = 'Producto no existe';
 
     constructor(path) {
         this.path = path;
         this.products = [];
-        this.schema = joi.object({
-            title: joi.string().required(),
-            description: joi.string().required(),
-            price: joi.number().required(),
-            code: joi.string().required(),
-            stock: joi.number().required(),
-            status: joi.boolean().required(),
-            thumbnails: joi.array().optional(),
-            category: joi.string().required()
+        this.schema = Joi.object({
+            title: Joi.string().required(),
+            description: Joi.string().required(),
+            price: Joi.number().required(),
+            code: Joi.string().required(),
+            stock: Joi.number().required(),
+            status: Joi.boolean().required(),
+            thumbnails: Joi.array().optional(),
+            category: Joi.string().required()
         });
     }
 
@@ -47,7 +48,7 @@ class ProductManager {
                     description: objProduct.description,
                     price: objProduct.price,
                     status: objProduct.status || true,
-                    thumbnails: objProduct.thumbnails,
+                    thumbnail: objProduct.thumbnail,
                     code: objProduct.code,
                     stock: objProduct.stock,
                     category: objProduct.category
@@ -56,6 +57,7 @@ class ProductManager {
                 this.products.push(newProduct);
                 await this.save();
                 console.log('Producto agregado.');
+                return newProduct;
             }       
         } catch(err) {
             console.log(err);
@@ -97,7 +99,6 @@ class ProductManager {
             })
            
             await this.save();
-            console.log(productToUpdate);
             console.log('Producto actualizado.');
         } catch (error) {
             console.log(error);
@@ -150,4 +151,4 @@ class ProductManager {
     }
 }
 
-module.exports = ProductManager;
+export default ProductManager;

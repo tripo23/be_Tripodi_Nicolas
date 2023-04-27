@@ -1,0 +1,13 @@
+<div>
+    <ul>
+        {{#each productos}}
+        <li>{{capitalize title}}
+            <ul>
+                <li>ID: {{id}}</li>
+                <li>Descripción: {{description}}</li>
+                <li>Precio: {{price}}</li>
+            </ul>
+        </li>
+        {{/each}}
+    </ul>
+</div>

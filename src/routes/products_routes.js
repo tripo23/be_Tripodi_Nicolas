@@ -1,8 +1,49 @@
-const express = require('express');
-const router = express.Router();
-const ProductManager = require('../ProductManager');
-const producto = new ProductManager('./productos.json');
+import { Router } from "express";
+import ProductManager from '../ProductManager.js';
 
+const producto = new ProductManager('./productos.json');
+const router = Router();
+
+
+router.get('/', async (req, res) => {
+    await producto.load();
+    const prodRender = producto.products;
+    res.render('home', { productos: prodRender });
+});
+
+router.get('/realtimeproducts', async (req, res) => {
+    await producto.load();
+    const prodRender = producto.products;
+    res.render('realtimeproducts', { productos: prodRender });
+});
+
+router.post("/realtimeproducts", async (req, res) => {
+  await producto.load();
+  let prodRender = producto.products;
+  let errorDelete = false;
+
+  if (req.query.method == "DELETE") {
+    const prodToDelete = await producto.getProductById(Number(req.body.id));
+
+    if (prodToDelete.status != "Producto no existe") {
+      const deleteProduct = await producto.deleteProduct(Number(req.body.id));
+      prodRender = prodRender.filter((item) => item.id != Number(req.body.id));
+      res.render("realTimeProducts", { productos: prodRender, errorDelete });
+    } else {
+        errorDelete = true;
+        const errorMessage = `Product with ID ${Number(req.body.id)} doesn't exist`;
+        res.render("realTimeProducts", {
+            productos: prodRender,
+            errorDelete,
+            errorMessage,
+        });
+    }
+  } else {
+        const prods = await producto.addProduct(req.body);
+        prodRender.push(prods);
+        res.render("realtimeproducts", { productos: prodRender });
+  }
+});
 
 
 // /products?limit=1
@@ -49,4 +90,4 @@ router.post('/products', async (req, res) => {
 );
 
 
-module.exports = router;
+export default router;
