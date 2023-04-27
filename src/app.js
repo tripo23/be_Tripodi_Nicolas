@@ -49,7 +49,7 @@ server.set('view engine', 'handlebars');
 
 
 // Endpoints API REST
-server.use('/api', routerProd);
+server.use('/', routerProd);
 server.use('/api', routerCart);
 
 // Contenidos estáticos
