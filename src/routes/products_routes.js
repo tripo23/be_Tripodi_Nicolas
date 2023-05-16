@@ -1,12 +1,12 @@
 import { Router } from "express";
-import ProductManager from '../ProductManager.js';
+import ProductManager from '../dao/productManager.dbclass.js';
 
-const producto = new ProductManager('./productos.json');
+const producto = new ProductManager();
 const router = Router();
 
 
 router.get('/', async (req, res) => {
-    await producto.load();
+    await producto.getProducts();
     const prodRender = producto.products;
     res.render('home', { productos: prodRender });
 });
@@ -16,6 +16,13 @@ router.get('/api/realtimeproducts', async (req, res) => {
     const prodRender = producto.products;
     res.render('realtimeproducts', { productos: prodRender });
 });
+
+router.get('/api/chat', async (req, res) => {
+    await producto.load();
+    const prodRender = producto.products;
+    res.render('chat', { productos: prodRender });
+});
+
 
 router.post('/api/realtimeproducts', async (req, res) => {
   await producto.load();

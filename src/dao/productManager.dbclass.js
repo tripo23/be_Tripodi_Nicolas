@@ -1,0 +1,119 @@
+import mongoose from 'mongoose';
+import productsModel from './models/products.model.js'
+
+//import fs from 'fs';
+import Joi from 'joi';
+
+class ProductManager {
+    static notFound = 'Producto no existe';
+
+    constructor(path) {
+        this.path = path;
+        this.products = [];
+        this.schema = Joi.object({
+            title: Joi.string().required(),
+            description: Joi.string().required(),
+            price: Joi.number().required(),
+            code: Joi.string().required(),
+            stock: Joi.number().required(),
+            status: Joi.boolean().required(),
+            thumbnails: Joi.array().optional(),
+            category: Joi.string().required()
+        });
+    }
+
+    handlePostRequest(req, res) {
+        try {
+          const { error, value } = this.schema.validate(req.body);
+          if (error) {
+            const err = [false, error]
+            return err;
+          } 
+          return value;
+
+        } catch (error) {
+          // Handle any other errors that may occur during validation or object addition
+          console.error(error);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
+
+    addProduct = async (objProduct) => {
+        const generatedID = await this.idGenerator();
+        try {
+            await this.load();
+            if (this.products.find((item) => item.code === objProduct.code)) {
+                console.log('Producto existente, por favor intente nuevamente.');
+            } else {
+                const newProduct = {
+                    title: objProduct.title,
+                    description: objProduct.description,
+                    price: objProduct.price,
+                    status: objProduct.status || true,
+                    thumbnail: objProduct.thumbnail,
+                    code: objProduct.code,
+                    stock: objProduct.stock,
+                    category: objProduct.category
+                    };
+    
+                const process = await productsModel.create(newProduct);
+                console.log('Producto agregado.');
+                return newProduct;
+            }       
+        } catch(err) {
+            console.log(err);
+        }
+    }
+
+    getProducts = async () => {
+        try {
+            await this.load();
+            if (this.products.length == 0) {
+                console.log('No hay productos.');
+            } else {
+                console.log(this.products);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    getProductById = async (id) => {
+        try {
+            const found = await productsModel.findById(id);
+            return found ? found : ProductManager.notFound;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    updateProduct = async (id, data) => {      
+       
+        try {
+            // Con mongoose.Types.ObjectId realizamos el casting para que el motor reciba el id en el formato correcto
+            const process = await productsModel.updateOne({ '_id': new mongoose.Types.ObjectId(id) }, data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deleteProduct = async (id) => {
+        try {
+            await this.load();
+            const process = await productsModel.deleteOne({ '_id': new mongoose.Types.ObjectId(id) });
+            console.log('Producto eliminado.');
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async load() {
+        try {
+            this.products = await productsModel.find().lean();
+        } catch (error) {
+            this.products=[];
+        }
+    }
+}
+
+export default ProductManager;

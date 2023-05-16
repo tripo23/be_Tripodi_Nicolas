@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App</title>
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+  <!-- Sweet Alert JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <style>
+    /* Adjust the styling as per your needs */
+    .chat-container {
+      max-width: 80vw;
+      margin: auto;
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .message-container {
+
+      margin-bottom: 10px;
+    }
+
+    .message-container .sender {
+      padding-top: 5px;
+      font-weight: bold;
+    }
+
+    .message-container .message {
+      margin-top: 5px;
+    }
+
+    .message-container .message-placeholder {
+      font-style: italic;
+      font-weight: lighter;
+    }
+
+    .input-group {
+      margin-top: 20px;
+    }
+
+    .input-group .form-control:focus {
+      border-color: #ffc107;
+      box-shadow: none;
+    }
+
+    .username-input {
+      position: relative;
+    }
+
+    .username-input .form-control {
+      padding-left: 40px;
+    }
+
+    .username-input .input-group-text {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background-color: #a6a5a5;
+      border: none;
+      border-right: 1px solid #ced4da;
+      border-radius: 4px 0 0 4px;
+      padding: 7px;
+    }
+
+    .username-input .input-group-text i {
+      color: #ccc;
+    }
+
+    .username-input .form-control::placeholder {
+      color: #ccc;
+    }
+
+    .username-input .form-control:focus {
+      box-shadow: none;
+      border-color: #ffc107;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="chat-container">
+      <div class="message-container" id="message-container">
+        <div class="message-placeholder" id="msg-plc">Messages will be shown here</div>
+      </div>
+      <!-- Add more message containers dynamically as needed -->
+    </div>
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Type your message here" id="message-input">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="send-btn" disabled>Send</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
+
+<script>
+
+
+  const ws = io('http://localhost:8080', { forceNew: true });
+
+  let username = "";
+  const sendbtn = document.getElementById('send-btn');
+  const message = document.getElementById('message-input');
+  const msg_cont = document.getElementById('message-container');
+  const msg_plc = document.getElementById('msg-plc');
+
+
+  Swal.fire({
+    title: 'Ingresá tu email',
+    input: 'email',
+    text: 'Por favor ingresá tu email para continuar',
+    icon: 'info',
+    confirmButtonText: 'Ingresar',
+    allowOutsideClick: 'false',
+    allowEscapeKey: 'false',
+    validationMessage: 'tu email tiene que tener el formato correo@proveedor.com'
+
+  }).then(result => {
+    username = result.value;
+  });
+
+  message.addEventListener('input', function () {
+    sendbtn.disabled = message.value === ""
+  });
+
+  message.addEventListener('keyup', e => {
+
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  sendbtn.addEventListener('click', e => {
+    sendMessage();
+  })
+
+  function sendMessage() {
+    if (message.value.trim().length > 0) {
+      ws.emit('message', { user: username, message: message.value })
+      message.value = "";
+    }
+  }
+
+  function renderMessage(msg) {
+    const newUserContainer = document.createElement("div");
+    newUserContainer.classList.add("sender");
+    newUserContainer.textContent = msg.user;
+
+    const newMessageContainer = document.createElement("div");
+    newMessageContainer.classList.add("message");
+    newMessageContainer.textContent = msg.message;
+
+    msg_cont.appendChild(newUserContainer);
+    msg_cont.appendChild(newMessageContainer);
+  }
+
+
+  ws.on('new_msg', (msg) => {
+    msg_plc.remove();
+    renderMessage(msg)
+  })
+
+
+</script>
+</body>
+
+</html>
