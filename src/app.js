@@ -1,4 +1,4 @@
-import {} from 'dotenv/config'
+import {} from 'dotenv/config';
 
 import express from "express";
 import mongoose from 'mongoose';
@@ -12,9 +12,9 @@ import { Server } from 'socket.io';
 
 import messageModel from './dao/models/messages.model.js'
 
-const port = parseInt(process.env.port) || 3000;
-const ws_port = parseInt(process.env.ws_port) || 3000;
-const mongoose_url = process.env.mongoose_url || 'mongodb://127.0.0.1:27017/coder51220';
+const port = parseInt(process.env.port) || 3030;
+const ws_port = parseInt(process.env.ws_port) || 8080;
+const mongoose_url = process.env.mongoose_url || 'mongodb+srv://practicabe:LT06dW5ewpkPJUOO@cluster0.qn3gvsu.mongodb.net/ecommerce';
 
 let prods = [];
 
@@ -83,6 +83,11 @@ wss.on('connection', (socket) => {
     socket.emit('new_msg', msg);
     const process = messageModel.create(msg);
   });
+
+  socket.on('newChatClient', async () => {
+    const historyMsg = await messageModel.find();
+    socket.emit('historyMsg', historyMsg )
+  })
 })
 
 

@@ -65,17 +65,25 @@ class ProductManager {
         }
     }
 
-    getProducts = async () => {
-        try {
-            await this.load();
-            if (this.products.length == 0) {
-                console.log('No hay productos.');
-            } else {
-                console.log(this.products);
+    getProducts = async (options, query) => {
+        //this.products = await productsModel.find().limit(query.limit).lean();
+        
+        let queryObject = {};
+        const field = query.field;
+        let value = query.value;
+        
+        if (field === "stock") {
+            queryObject = {
+                stock: { $gt: query.value }
             }
-        } catch (err) {
-            console.log(err);
+        } else {
+            queryObject[field] = value;
         }
+        
+        const process = await productsModel.paginate(queryObject, options);
+        
+        this.products = process.docs.map( doc => doc.toObject ( {getters: false}));
+        return process
     }
 
     getProductById = async (id) => {

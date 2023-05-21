@@ -113,7 +113,6 @@
 
 <script>
 
-
   const ws = io('http://localhost:8080', { forceNew: true });
 
   let username = "";
@@ -136,6 +135,7 @@
   }).then(result => {
     username = result.value;
   });
+
 
   message.addEventListener('input', function () {
     sendbtn.disabled = message.value === ""
@@ -172,11 +172,31 @@
     msg_cont.appendChild(newMessageContainer);
   }
 
+  function firstRenderMessage(history) {
+    history.forEach((msg) => {
+      renderMessage(msg)
+    })
+  };
 
+
+  document.addEventListener('DOMContentLoaded', () => {
+    ws.emit('newChatClient', 'new chat client connected');
+  });
+
+  ws.on('historyMsg', (history) => {
+    if (Object.keys(history).length !== 0) {
+      msg_plc.remove();
+      firstRenderMessage(history);
+    }
+  });
+  
+  
   ws.on('new_msg', (msg) => {
     msg_plc.remove();
-    renderMessage(msg)
-  })
+    renderMessage(msg);
+  });
+
+
 
 
 </script>
