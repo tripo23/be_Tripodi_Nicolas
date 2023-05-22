@@ -53,11 +53,8 @@ router.put('/carts/:cid/product/:pid', async (req,res) => {
 
 router.put('/carts/:cid', async (req,res) => {
     const cid = req.params.cid;
-    const pid = req.body.pid;
-    const quantity = req.body.quantity;
-    const data = {cid, pid, quantity}
-
-    const cartUpdate = await cart.updateCart(data);
+    const data = req.body.products;
+    const cartUpdate = await cart.addArrayToCart(data, cid);
     
     if (cartUpdate == 'err') {
         res.status(404).json({error: 'No existe cart con ese ID'});

@@ -16,10 +16,13 @@ class CartManager {
     const process = await cartsModel.create(newCart);
     return process._id;
   };
-
+  
   getCartByID = async (id) => {
     try {
-        const found = await cartsModel.findById(id).populate({ path: 'products', model: productModel });
+        const found = await cartsModel.findById(id).populate({
+            path: 'products',
+            model: productModel
+        });        
         return found ? found : CartManager.notFound;
     } catch (err) {
       console.log(err);
@@ -73,6 +76,24 @@ class CartManager {
         return "err";
       } else {
             cartToUpdate.products.push({_id: new mongoose.Types.ObjectId(data.pid), quantity: parseInt(data.quantity)});
+            const process = await cartToUpdate.save();    
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  addArrayToCart = async (data, cid) => {
+    try {
+        const cartToUpdate = await cartsModel.findById(id).populate({
+            path: 'products',
+            model: productModel
+        }); 
+      if (cartToUpdate == CartManager.notFound) {
+        return "err";
+      } else {
+            cartToUpdate.products = [cartToUpdate.products, ...data];
             const process = await cartToUpdate.save();    
       }
     } catch (error) {

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import productModel from "./products.model.js";
 
 mongoose.pluralize(null); 
 
@@ -19,11 +18,6 @@ const schema = new mongoose.Schema({
     },
   ],
 });
-
-schema.pre('populate', function() {
-  this.populate({ path: 'products.product', model: productModel });
-});
-
 
 const cartModel = mongoose.model(collection, schema);
 
