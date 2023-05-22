@@ -19,8 +19,7 @@ class CartManager {
 
   getCartByID = async (id) => {
     try {
-        const found = await cartsModel.findById(id).populate("products");
-        //const found = await cartsModel.find().populate({ path: 'products', model: productModel });
+        const found = await cartsModel.findById(id).populate({ path: 'products', model: productModel });
         return found ? found : CartManager.notFound;
     } catch (err) {
       console.log(err);

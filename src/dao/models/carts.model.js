@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import productModel from "./products.model.js";
+
+mongoose.pluralize(null); 
 
 const collection = "carts";
 
@@ -7,7 +10,7 @@ const schema = new mongoose.Schema({
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "products",
+        ref: 'products',
       },
       quantity: {
         type: Number,
@@ -17,6 +20,9 @@ const schema = new mongoose.Schema({
   ],
 });
 
+schema.pre('populate', function() {
+  this.populate({ path: 'products.product', model: productModel });
+});
 
 
 const cartModel = mongoose.model(collection, schema);
