@@ -7,10 +7,14 @@ import routerProd from './routes/products_routes.js';
 import routerCart from './routes/carts_routes.js';
 
 import exphbs from 'express-handlebars';
+import handlebars from 'handlebars';
 import { __dirname } from './utils.js'
 import { Server } from 'socket.io';
 
 import messageModel from './dao/models/messages.model.js'
+
+
+
 
 const port = parseInt(process.env.port) || 3030;
 const ws_port = parseInt(process.env.ws_port) || 8080;
@@ -47,21 +51,24 @@ try {
 }
 
 
-
-// Helper para handlebars
+// Helper for handlebars
 const hbs = exphbs.create({
-    helpers: {
-      capitalize: function(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-      }
+  helpers: {
+    capitalize: function (str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     }
-  });
+  },
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  }
+});
 
-
-// Motor de plantillas handlebars
+// Engine setup
 server.engine('handlebars', hbs.engine);
-server.set('views', __dirname+'/views');
+server.set('views', new URL('./views', import.meta.url).pathname);
 server.set('view engine', 'handlebars');
+
 
 
 // Endpoints API REST

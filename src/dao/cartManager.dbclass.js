@@ -19,11 +19,14 @@ class CartManager {
   
   getCartByID = async (id) => {
     try {
-        const found = await cartsModel.findById(id).populate({
-            path: 'products',
-            model: productModel
-        });        
-        return found ? found : CartManager.notFound;
+        let found = await cartsModel.findById(id).populate({
+            path: 'products.product',
+            model: productModel,
+            lean: true
+        }); 
+    
+    return found ? found : CartManager.notFound;
+
     } catch (err) {
       console.log(err);
     }
@@ -40,7 +43,7 @@ class CartManager {
             if (productToUpdate) {
                 productToUpdate.quantity = productToUpdate.quantity + parseInt(data.quantity);
             } else {
-                cartToUpdate.products.push({_id: new mongoose.Types.ObjectId(data.pid), quantity: parseInt(data.quantity)});
+                cartToUpdate.products.push({product: new mongoose.Types.ObjectId(data.pid), quantity: parseInt(data.quantity)});
             }
             const process = await cartToUpdate.save();    
       }
@@ -52,11 +55,12 @@ class CartManager {
   updateQuantity = async (data) => {
     try {
       const cartToUpdate = await this.getCartByID(data.cid);
+      console.log(cartToUpdate);
       if (cartToUpdate == CartManager.notFound) {
         return "err";
       } else {
             const productId = new mongoose.Types.ObjectId(data.pid);
-            const productToUpdate = cartToUpdate.products.find(prod => prod._id.equals(productId));
+            const productToUpdate = cartToUpdate.products.find(prod => prod.product._id.equals(productId));
             if (productToUpdate) {
                 productToUpdate.quantity = productToUpdate.quantity + parseInt(data.quantity);
             } else {
@@ -86,8 +90,8 @@ class CartManager {
 
   addArrayToCart = async (data, cid) => {
     try {
-        const cartToUpdate = await cartsModel.findById(id).populate({
-            path: 'products',
+        const cartToUpdate = await cartsModel.findById(cid).populate({
+            path: 'product.products',
             model: productModel
         }); 
       if (cartToUpdate == CartManager.notFound) {
@@ -110,9 +114,9 @@ class CartManager {
       } else {
             
             const productId = new mongoose.Types.ObjectId(data.pid);
-            const productExists = cartToUpdate.products.some(prod => prod._id.equals(productId));
+            const productExists = cartToUpdate.products.some(prod => prod.product._id.equals(productId));
         if (productExists) {
-            cartToUpdate.products = cartToUpdate.products.filter(prod => !prod._id.equals(productId));
+            cartToUpdate.products = cartToUpdate.products.filter(prod => !prod.product._id.equals(productId));
         } else {
             return 'err'
         }

@@ -6,12 +6,40 @@ const router = Router();
 
 
 
-router.get('/carts/:cid', async (req, res) => {
+// router.get('/carts/:cid', async (req, res) => {
+//     const selectedCart = await cart.getCartByID(req.params.cid);
+//     if (selectedCart == 'err') {
+//         res.status(404).json({error: 'No existe cart con ese ID'});
+//     } else {
+//         const cartRender = selectedCart.products;
+//         console.log(cartRender);
+//         res.status(200).render('cart', { products: cartRender });
+//         //res.send(selectedCart)
+//     }
+// });
+
+router.get("/carts/:cid", async (req, res) => {
     const selectedCart = await cart.getCartByID(req.params.cid);
-    if (selectedCart == 'err') {
-        res.status(404).json({error: 'No existe cart con ese ID'});
+    if (selectedCart == "err") {
+        res.status(404).json({ error: "No existe cart con ese ID" });
     } else {
-        res.status(200).send(selectedCart);
+        let cartRender = selectedCart;
+        let total = 0;
+        const cartID = req.params.cid;
+        
+
+        cartRender.products.forEach((prod) => {
+            prod.subtotal = prod.quantity * prod.product.price;
+            total += prod.subtotal;
+        });
+
+        res.status(200).render("cart", {
+            products: cartRender.products,
+            total: total,
+            cartID: cartID
+        });
+
+        //res.status(200).send(selectedCart)
     }
 });
 

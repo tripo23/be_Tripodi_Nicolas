@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     
     const object = await producto.getProducts(options, query);
     const prodRender = producto.products;
-    res.render('home', { productos: prodRender });
+    //res.status(200).render('home', { productos: prodRender }); 
     res.status(200).send(object);
 });
 
@@ -33,6 +33,12 @@ router.get('/api/realtimeproducts', async (req, res) => {
     await producto.load();
     const prodRender = producto.products;
     res.render('realtimeproducts', { productos: prodRender });
+});
+
+router.get('/api/products', async (req, res) => {
+    await producto.load();
+    const prodRender = producto.products;
+    res.render('products', { products: prodRender });
 });
 
 router.get('/api/chat', async (req, res) => {

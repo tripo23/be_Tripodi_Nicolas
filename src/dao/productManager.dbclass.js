@@ -39,7 +39,6 @@ class ProductManager {
       }
 
     addProduct = async (objProduct) => {
-        const generatedID = await this.idGenerator();
         try {
             await this.load();
             if (this.products.find((item) => item.code === objProduct.code)) {
@@ -66,7 +65,7 @@ class ProductManager {
     }
 
     getProducts = async (options, query) => {
-        //this.products = await productsModel.find().limit(query.limit).lean();
+        
         
         let queryObject = {};
         const field = query.field;
@@ -79,7 +78,7 @@ class ProductManager {
         } else {
             queryObject[field] = value;
         }
-        
+   
         const process = await productsModel.paginate(queryObject, options);
         
         this.products = process.docs.map( doc => doc.toObject ( {getters: false}));
