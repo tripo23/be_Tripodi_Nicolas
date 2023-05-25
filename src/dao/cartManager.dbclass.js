@@ -88,16 +88,14 @@ class CartManager {
   };
 
 
-  addArrayToCart = async (data, cid) => {
+  addArrayToCart = async (data, cid) => { 
     try {
-        const cartToUpdate = await cartsModel.findById(cid).populate({
-            path: 'product.products',
-            model: productModel
-        }); 
+      let cartToUpdate = await this.getCartByID(cid);
       if (cartToUpdate == CartManager.notFound) {
         return "err";
       } else {
-            cartToUpdate.products = [cartToUpdate.products, ...data];
+            //cartToUpdate.products = [cartToUpdate.products, ...data.products];
+            cartToUpdate.products = cartToUpdate.products.concat(data.products)
             const process = await cartToUpdate.save();    
       }
     } catch (error) {

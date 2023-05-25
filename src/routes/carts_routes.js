@@ -81,7 +81,8 @@ router.put('/carts/:cid/product/:pid', async (req,res) => {
 
 router.put('/carts/:cid', async (req,res) => {
     const cid = req.params.cid;
-    const data = req.body.products;
+    const data = req.body;
+    console.log(req.body);
     const cartUpdate = await cart.addArrayToCart(data, cid);
     
     if (cartUpdate == 'err') {
