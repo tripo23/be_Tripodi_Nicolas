@@ -1,7 +1,9 @@
 import { Router } from "express";
 import ProductManager from '../dao/productManager.dbclass.js';
+import UserManager from '../dao/userManager.dbclass.js';
 
 const producto = new ProductManager();
+const user = new UserManager();
 const router = Router();
 
 const baseURL = 'http://localhost:3030/'
@@ -32,16 +34,18 @@ router.get('/', auth, async (req, res) => {
 });
 
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const { usr, pass } = req.body;
-    if (usr != 'pepe@pepe.com' || pass != 'pass') {
-        return res.send('bad credentials')
+    const validated = await user.validateUser(usr, pass);
+    if (validated) {
+        req.session.userValidated = true;
+        req.session.errorMessage = '';
+        res.redirect(baseURL+'api/products');
+    } else {
+        req.session.userValidated = false;
+        req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
+        res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } });
     }
-
-    req.session.user = usr;
-    req.session.admin = true;
-    res.redirect(baseURL+'/api/products');
-
 });
 
 

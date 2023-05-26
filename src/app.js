@@ -13,6 +13,7 @@ import { __dirname } from './utils.js';
 import routerProd from './routes/products_routes.js';
 import routerCart from './routes/carts_routes.js';
 import mainRoutes from './routes/main_routes.js';
+import userRoutes from './routes/user_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
 
@@ -99,6 +100,7 @@ server.use(session({
 // Endpoints API REST
 server.use('/', routerProd);
 server.use('/', mainRoutes);
+server.use('/', userRoutes);
 server.use('/api', routerCart);
 
 // Contenidos estáticos
