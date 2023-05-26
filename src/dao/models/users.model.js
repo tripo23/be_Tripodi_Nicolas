@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     age: { type: Number, required: true},
+    role: {type: String, default: 'user'},
     avatar: String
 });
 

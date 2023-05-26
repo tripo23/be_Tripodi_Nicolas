@@ -9,7 +9,7 @@ const router = Router();
 const baseURL = 'http://localhost:3030/'
 
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     // http://localhost:3030/?limit=2&page=1&sort=-1&field=category&value=electronics
     // http://localhost:3030/?sort=-1&field=stock&value=10 MIRA SI el stock es >10
 
@@ -33,6 +33,9 @@ router.get('/', auth, async (req, res) => {
     res.status(200).send(object);
 });
 
+router.get('/login', (req,res) => {
+    res.render('login');
+})
 
 router.post('/login', async (req, res) => {
     const { usr, pass } = req.body;
@@ -40,6 +43,10 @@ router.post('/login', async (req, res) => {
     if (validated) {
         req.session.userValidated = true;
         req.session.errorMessage = '';
+        req.session.user = usr;
+        if (validated.role === 'admin') {
+            req.session.user = validated.role
+        }
         res.redirect(baseURL+'api/products');
     } else {
         req.session.userValidated = false;
@@ -58,13 +65,14 @@ router.post('/logout', (req, res) => {
 });
 
 
-function auth(req, res, next) {
-    if (req.session?.user === 'pepe@pepe.com') {
-        return next();
-    }
-    res.render('login', {
-        sessionInfo: req.sessionStore
-    });
-}
+// function auth(req, res, next) {
+//     console.log(req.session.user);
+//     if (req.session?.user === 'pepe@pepe.com') {
+//         return next();
+//     }
+//     res.render('login', {
+//         sessionInfo: req.sessionStore
+//     });
+// }
 
 export default router;

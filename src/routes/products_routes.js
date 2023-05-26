@@ -11,10 +11,10 @@ router.get('/api/realtimeproducts', async (req, res) => {
     res.render('realtimeproducts', { productos: prodRender });
 });
 
-router.get('/api/products', async (req, res) => {
+router.get('/api/products', auth, async (req, res) => {
     await producto.load();
     const prodRender = producto.products;
-    res.render('products', { products: prodRender });
+    res.render('products', { products: prodRender, user: req.session.user });
 });
 
 router.get('/api/chat', async (req, res) => {
@@ -96,5 +96,14 @@ router.post('/api/products', async (req, res) => {
     }
 );
 
+function auth(req, res, next) {
+    console.log(req.session.user);
+    if (req.session?.user) {
+        return next();
+    }
+    res.render('login', {
+        sessionInfo: req.sessionStore
+    });
+}
 
 export default router;
