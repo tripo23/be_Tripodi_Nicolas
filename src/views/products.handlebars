@@ -1,27 +1,44 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Products</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+
+    }
+
+    .container {
+      margin-top: 1.5rem;
+      width: 100wv;
     }
 
     h1 {
       margin-bottom: 20px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .card {
+      margin-bottom: 20px;
     }
 
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
+    .card-header {
+      font-weight: bold;
+    }
+
+    .card-body {
+      display: flex;
+      align-items: center;
+    }
+
+    .card-thumbnail {
+      flex: 0 0 100px;
+      margin-right: 20px;
     }
 
     .add-to-cart-button {
@@ -35,44 +52,75 @@
       font-size: 14px;
       margin-top: 10px;
       cursor: pointer;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 120px;
     }
 
     .add-to-cart-button:hover {
       background-color: #45a049;
     }
+
+    .cart-icon {
+      margin-right: 5px;
+    }
   </style>
 </head>
-<body>
-  <h1>Products</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Stock</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each products}}
-      <tr>
-        <td>{{title}}</td>
-        <td>{{description}}</td>
-        <td>{{price}}</td>
-        <td>{{stock}}</td>
-        <td>
-          <button class="add-to-cart-button" onclick="addToCart('{{_id}}')">Add to Cart</button>
-        </td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
 
+<body>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <a class="navbar-brand" href="#">Products</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <form action="http://localhost:3030/logout" method="post">
+            <button type="submit" class="btn btn-primary">Logout</button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  
+
+  <div class="container">
+    <div class="row">
+      {{#each products}}
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">{{title}}</div>
+          <div class="card-body">
+            <img class="card-thumbnail" src="{{thumbnail}}">
+            <p class="card-text">{{description}}</p>
+            <p class="card-text">Price: {{price}}</p>
+            <p class="card-text">Stock: {{stock}}</p>
+            <button class="add-to-cart-button" onclick="addToCart('{{_id}}')">
+              <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="16px"
+                height="16px">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M8 16h8v-2H8v2zm-6-6h6v-2H2v2zm0 4h6v-2H2v2zm12 0h6v-2h-6v2zm0-4h6v-2h-6v2zm-6-4V5H2v2h6zm10 14c.56 0 1-.45 1-1v-1h2v-2h-2v-2h-2v6h2zm4-12h-6v2h6v2h2V9c0-1.65-1.35-3-3-3H8c-1.65 0-3 1.35-3 3v8c0 1.65 1.35 3 3 3h12c1.65 0 3-1.35 3-3V9h-2V7h2V5h-6V3h-2v2H8v2h12v8z" />
+              </svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
     function addToCart(productId) {
-      // hacer cositas acá
+      // do something here
     }
   </script>
 </body>
+
 </html>

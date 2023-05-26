@@ -1,24 +1,32 @@
 import {} from 'dotenv/config';
 
+import { Server } from 'socket.io';
 import express from "express";
 import mongoose from 'mongoose';
+import session from 'express-session';
+//import fileStore from 'session-file-store';
+import mongoStore from 'connect-mongo'
+
+import exphbs from 'express-handlebars';
+import { __dirname } from './utils.js';
 
 import routerProd from './routes/products_routes.js';
 import routerCart from './routes/carts_routes.js';
+import mainRoutes from './routes/main_routes.js';
+import messageModel from './dao/models/messages.model.js';
 
-import exphbs from 'express-handlebars';
-import handlebars from 'handlebars';
-import { __dirname } from './utils.js'
-import { Server } from 'socket.io';
 
-import messageModel from './dao/models/messages.model.js'
+
 
 
 
 
 const port = parseInt(process.env.port) || 3030;
 const ws_port = parseInt(process.env.ws_port) || 8080;
-const mongoose_url = process.env.mongoose_url || 'mongodb+srv://practicabe:LT06dW5ewpkPJUOO@cluster0.qn3gvsu.mongodb.net/ecommerce';
+const mongoose_url = process.env.mongoose_url;
+const secret_session = process.env.secret_session;
+
+
 
 let prods = [];
 
@@ -38,6 +46,8 @@ const wss = new Server(httpServer, {
 
 server.use(express.json());
 server.use(express.urlencoded({extended: true}));
+
+
 
 // Inicialización del servidor
 try {
@@ -69,14 +79,32 @@ server.engine('handlebars', hbs.engine);
 server.set('views', new URL('./views', import.meta.url).pathname);
 server.set('view engine', 'handlebars');
 
+// Manejo de sesiones
+//const fileStorage = fileStore(session);
+
+server.use(session({
+  store: mongoStore.create({
+    mongoUrl: mongoose_url,
+    mongoOptions: {useNewUrlParser:true, useUnifiedTopology:true},
+    ttl: 100
+  }),
+  secret: secret_session,
+  resave: true,
+  saveUninitialized: true
+}));
+
+
 
 
 // Endpoints API REST
 server.use('/', routerProd);
+server.use('/', mainRoutes);
 server.use('/api', routerCart);
 
 // Contenidos estáticos
 server.use('/static', express.static(__dirname + '/public'))
+
+
 
 // Eventos socket.io
 wss.on('connection', (socket) => {
