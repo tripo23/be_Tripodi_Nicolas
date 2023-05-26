@@ -14,7 +14,7 @@ router.get('/api/realtimeproducts', async (req, res) => {
 router.get('/api/products', auth, async (req, res) => {
     await producto.load();
     const prodRender = producto.products;
-    res.render('products', { products: prodRender, user: req.session.user });
+    res.render('products', { products: prodRender, user: req.session.user, role: req.session.role });
 });
 
 router.get('/api/chat', async (req, res) => {
@@ -97,7 +97,6 @@ router.post('/api/products', async (req, res) => {
 );
 
 function auth(req, res, next) {
-    console.log(req.session.user);
     if (req.session?.user) {
         return next();
     }

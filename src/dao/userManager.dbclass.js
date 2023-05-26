@@ -12,7 +12,6 @@ class UserManager {
     let existing = 0;
     const process = await userModel.findOne({ email: email })
     process ? existing = 1 : existing = 0;
-    console.log(`esto devuelve el process ${existing}`);
     return existing
   }
 
@@ -28,8 +27,6 @@ class UserManager {
   }
 
   newUser = async (data) => {
-    //const { name, lastname, email, age, password } = data;
-
     if (!UserManager.#objEmpty(data)) {
       const newUser = data;
       newUser.password = UserManager.#encryptPass(newUser.password);
@@ -48,11 +45,11 @@ class UserManager {
 
   validateUser = async (user, pass) => {
     try {
-        return await userModel.findOne({ email: user, password: crypto.createHash('sha256').update(pass).digest('hex')});
+      return await userModel.findOne({ email: user, password: crypto.createHash('sha256').update(pass).digest('hex') });
     } catch (err) {
-        this.checkStatus = `validateUser: ${err}`;
+      this.checkStatus = `validateUser: ${err}`;
     }
-}
+  }
 
 }
 

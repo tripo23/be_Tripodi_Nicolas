@@ -9,7 +9,7 @@ const router = Router();
 const baseURL = 'http://localhost:3030/'
 
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     // http://localhost:3030/?limit=2&page=1&sort=-1&field=category&value=electronics
     // http://localhost:3030/?sort=-1&field=stock&value=10 MIRA SI el stock es >10
 
@@ -43,10 +43,12 @@ router.post('/login', async (req, res) => {
     if (validated) {
         req.session.userValidated = true;
         req.session.errorMessage = '';
-        req.session.user = usr;
-        if (validated.role === 'admin') {
-            req.session.user = validated.role
+        req.session.user = usr
+        req.session.role = validated.role;
+        if (usr === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
+            req.session.role = 'admin';
         }
+                
         res.redirect(baseURL+'api/products');
     } else {
         req.session.userValidated = false;
@@ -65,14 +67,14 @@ router.post('/logout', (req, res) => {
 });
 
 
-// function auth(req, res, next) {
-//     console.log(req.session.user);
-//     if (req.session?.user === 'pepe@pepe.com') {
-//         return next();
-//     }
-//     res.render('login', {
-//         sessionInfo: req.sessionStore
-//     });
-// }
+function auth(req, res, next) {
+    console.log(req.session.user);
+    if (req.session?.user) {
+        return next();
+    }
+    res.render('login', {
+        sessionInfo: req.sessionStore
+    });
+}
 
 export default router;

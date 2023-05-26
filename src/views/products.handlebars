@@ -82,7 +82,8 @@
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{user}}
             </a>
-            <div class="dropdown-menu justify-content-center" aria-labelledby="navbarDropdownMenuLink">  
+            <div class="dropdown-menu justify-content-center" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item text-center" href="#">Rol: {{role}}</a>  
               <form class="dropdown-item text-center" action="http://localhost:3030/logout" method="post">
                 <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
               </form>
