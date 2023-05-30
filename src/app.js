@@ -73,7 +73,7 @@ server.set('view engine', 'handlebars');
 
 // Endpoints API REST
 server.use('/', routerProd);
-server.use('/api', routerCart);
+server.use('/', routerCart);
 
 // Contenidos estáticos
 server.use('/static', express.static(__dirname + '/public'))
