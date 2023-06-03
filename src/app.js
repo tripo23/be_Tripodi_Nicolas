@@ -17,11 +17,6 @@ import userRoutes from './routes/user_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
 
-
-
-
-
-
 const port = parseInt(process.env.port) || 3030;
 const ws_port = parseInt(process.env.ws_port) || 8080;
 const mongoose_url = process.env.mongoose_url;
@@ -100,6 +95,8 @@ server.use(session({
 // Endpoints API REST
 server.use('/', routerProd);
 server.use('/', routerCart);
+server.use('/', mainRoutes);
+server.use('/', userRoutes);
 
 // Contenidos estáticos
 server.use('/static', express.static(__dirname + '/public'))

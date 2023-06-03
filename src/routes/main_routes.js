@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
             req.session.role = 'admin';
         }
                 
-        res.redirect(baseURL+'api/products');
+        res.redirect(baseURL+'products');
     } else {
         req.session.userValidated = false;
         req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
