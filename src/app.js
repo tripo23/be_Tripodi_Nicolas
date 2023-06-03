@@ -14,6 +14,7 @@ import routerProd from './routes/products_routes.js';
 import routerCart from './routes/carts_routes.js';
 import mainRoutes from './routes/main_routes.js';
 import userRoutes from './routes/user_routes.js'
+import viewRoutes from './routes/view_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
 
@@ -93,10 +94,11 @@ server.use(session({
 
 
 // Endpoints API REST
-server.use('/', routerProd);
-server.use('/', routerCart);
+server.use('/api', routerProd);
+server.use('/api', routerCart);
 server.use('/', mainRoutes);
 server.use('/', userRoutes);
+server.use('/', viewRoutes)
 
 // Contenidos estáticos
 server.use('/static', express.static(__dirname + '/public'))

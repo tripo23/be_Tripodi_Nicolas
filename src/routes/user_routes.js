@@ -9,7 +9,6 @@ const baseURL = 'http://localhost:3030/'
 
 
 router.get('/signup', (req, res) => {
-
     res.render('signup');
 });
 
