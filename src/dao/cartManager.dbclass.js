@@ -18,18 +18,18 @@ class CartManager {
   };
   
   getCartByID = async (id) => {
+    let found;
     try {
-        let found = await cartsModel.findById(id).populate({
+        found = await cartsModel.findById(id).populate({
             path: 'products.product',
             model: productModel,
             lean: true
         }); 
     
-    return found ? found : CartManager.notFound;
-
     } catch (err) {
-      console.log(err);
+      found = CartManager.notFound;
     }
+    return found 
   };
 
   addProductToCart = async (data) => {
@@ -107,10 +107,10 @@ class CartManager {
   deleteProductFromCart = async (data) => {
     try {
       const cartToUpdate = await this.getCartByID(data.cid);
+      
       if (cartToUpdate == CartManager.notFound) {
         return "err";
       } else {
-            
             const productId = new mongoose.Types.ObjectId(data.pid);
             const productExists = cartToUpdate.products.some(prod => prod.product._id.equals(productId));
         if (productExists) {

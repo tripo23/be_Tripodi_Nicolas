@@ -6,18 +6,6 @@ const router = Router();
 
 
 
-// router.get('/carts/:cid', async (req, res) => {
-//     const selectedCart = await cart.getCartByID(req.params.cid);
-//     if (selectedCart == 'err') {
-//         res.status(404).json({error: 'No existe cart con ese ID'});
-//     } else {
-//         const cartRender = selectedCart.products;
-//         console.log(cartRender);
-//         res.status(200).render('cart', { products: cartRender });
-//         //res.send(selectedCart)
-//     }
-// });
-
 router.get("/carts/:cid", async (req, res) => {
     const selectedCart = await cart.getCartByID(req.params.cid);
     if (selectedCart == "err") {
@@ -43,13 +31,22 @@ router.get("/carts/:cid", async (req, res) => {
     }
 });
 
-router.post('/carts', async (req,res) => {
+router.get('/api/carts/:cid', async (req, res) => {
+    const selectedCart = await cart.getCartByID(req.params.cid);
+    if (selectedCart == "err") {
+        res.status(404).json({ error: "No existe cart con ese ID" });
+    } else {
+        res.status(200).send(selectedCart)
+    }
+});
+
+router.post('/api/carts', async (req,res) => {
     const cartID = await cart.newCart();
     const message = `Carrito enviado con id  ${cartID}`;
     res.status(200).json({message, cartID});
 });
 
-router.post('/carts/:cid/product/:pid', async (req,res) => {
+router.post('/api/carts/:cid/product/:pid', async (req,res) => {
     const cid = req.params.cid;
     const pid = req.params.pid;
     const quantity = 1; // harcodeado a pedido de la consigna.
@@ -64,7 +61,7 @@ router.post('/carts/:cid/product/:pid', async (req,res) => {
     }
 });
 
-router.put('/carts/:cid/product/:pid', async (req,res) => {
+router.put('/api/carts/:cid/product/:pid', async (req,res) => {
     const cid = req.params.cid;
     const pid = req.params.pid;
     const quantity = req.body.quantity;
@@ -79,7 +76,7 @@ router.put('/carts/:cid/product/:pid', async (req,res) => {
     }
 });
 
-router.put('/carts/:cid', async (req,res) => {
+router.put('/api/carts/:cid', async (req,res) => {
     const cid = req.params.cid;
     const data = req.body;
     console.log(req.body);
@@ -93,7 +90,7 @@ router.put('/carts/:cid', async (req,res) => {
 });
 
 
-router.delete('/carts/:cid/product/:pid', async (req,res) => {
+router.delete('/api/carts/:cid/product/:pid', async (req,res) => {
     const cid = req.params.cid;
     const pid = req.params.pid;
     const data = {cid, pid}
@@ -107,7 +104,7 @@ router.delete('/carts/:cid/product/:pid', async (req,res) => {
     }
 });
 
-router.delete('/carts/:cid', async (req,res) => {
+router.delete('/api/carts/:cid', async (req,res) => {
     const cid = req.params.cid;
     const data = {cid}
 

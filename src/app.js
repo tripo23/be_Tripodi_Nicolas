@@ -99,9 +99,7 @@ server.use(session({
 
 // Endpoints API REST
 server.use('/', routerProd);
-server.use('/', mainRoutes);
-server.use('/', userRoutes);
-server.use('/api', routerCart);
+server.use('/', routerCart);
 
 // Contenidos estáticos
 server.use('/static', express.static(__dirname + '/public'))
