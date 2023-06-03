@@ -77,8 +77,6 @@ server.set('views', new URL('./views', import.meta.url).pathname);
 server.set('view engine', 'handlebars');
 
 // Manejo de sesiones
-//const fileStorage = fileStore(session);
-
 server.use(session({
   store: mongoStore.create({
     mongoUrl: mongoose_url,

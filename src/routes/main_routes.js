@@ -40,15 +40,15 @@ router.get('/login', (req,res) => {
 router.post('/login', async (req, res) => {
     const { usr, pass } = req.body;
     const validated = await user.validateUser(usr, pass);
+    // console.log(validated);
     if (validated) {
         req.session.userValidated = true;
         req.session.errorMessage = '';
-        req.session.user = usr
+        req.session.user = usr;
         req.session.role = validated.role;
         if (usr === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
             req.session.role = 'admin';
-        }
-                
+        }      
         res.redirect(baseURL+'products');
     } else {
         req.session.userValidated = false;
@@ -68,7 +68,6 @@ router.post('/logout', (req, res) => {
 
 
 function auth(req, res, next) {
-    console.log(req.session.user);
     if (req.session?.user) {
         return next();
     }

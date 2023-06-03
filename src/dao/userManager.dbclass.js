@@ -1,5 +1,6 @@
 import userModel from "./models/users.model.js";
-import crypto from 'crypto';
+import { createHash, isValidPassword } from "../utils.js"
+
 
 class UserManager {
   static notFound = "err";
@@ -19,9 +20,7 @@ class UserManager {
     return this.status;
   }
 
-  static #encryptPass = (pass) => {
-    return crypto.createHash('sha256').update(pass).digest('hex');
-  }
+
   static #objEmpty(obj) {
     return Object.keys(obj).length === 0;
   }
@@ -29,7 +28,7 @@ class UserManager {
   newUser = async (data) => {
     if (!UserManager.#objEmpty(data)) {
       const newUser = data;
-      newUser.password = UserManager.#encryptPass(newUser.password);
+      newUser.password = createHash(newUser.password);
       try {
         const process = await userModel.create(data);
         this.checkStatus = 1;
@@ -45,12 +44,23 @@ class UserManager {
 
   validateUser = async (user, pass) => {
     try {
-      return await userModel.findOne({ email: user, password: crypto.createHash('sha256').update(pass).digest('hex') });
+      const currentUser = await userModel.findOne({ email: user });
+      if (!currentUser) {
+        //return res.status(400).send({status: "error", error: "User not found"})
+      } else {
+        if (!(isValidPassword(currentUser, pass))) {
+          return res.status(403).send({status: "error", error: "Bad credentials"})
+        } else {
+          delete currentUser.password;
+          return currentUser;
+        }
+      }
     } catch (err) {
       this.checkStatus = `validateUser: ${err}`;
     }
   }
-
 }
+
+
 
 export default UserManager;
