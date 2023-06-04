@@ -17,6 +17,7 @@ import routerCart from './routes/carts_routes.js';
 import mainRoutes from './routes/main_routes.js';
 import userRoutes from './routes/user_routes.js'
 import viewRoutes from './routes/view_routes.js'
+import sessionRoutes from './routes/session_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
 
@@ -101,6 +102,7 @@ server.use('/api', routerProd);
 server.use('/api', routerCart);
 server.use('/', mainRoutes);
 server.use('/', userRoutes);
+server.use('/', sessionRoutes);
 server.use('/', viewRoutes)
 
 // Contenidos estáticos

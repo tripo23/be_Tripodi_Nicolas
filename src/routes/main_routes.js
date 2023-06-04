@@ -1,10 +1,9 @@
 import { Router } from "express";
 import ProductManager from '../dao/productManager.dbclass.js';
 import UserManager from '../dao/userManager.dbclass.js';
-import passport from 'passport';
+
 
 const producto = new ProductManager();
-const user = new UserManager();
 const router = Router();
 
 const baseURL = 'http://localhost:3030/'
@@ -34,70 +33,7 @@ router.get('/', auth, async (req, res) => {
     res.status(200).send(object);
 });
 
-router.get('/login', (req,res) => {
-    if (req.session.errorMessage !== '') {
-        res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } }); 
-    } else {
-        res.render('login');
-    }
-    
-})
-
-// router.post('/login', async (req, res) => {
-//     const { usr, pass } = req.body;
-//     const validated = await user.validateUser(usr, pass);
-//     // console.log(validated);
-//     if (validated) {
-//         req.session.userValidated = true;
-//         req.session.errorMessage = '';
-//         req.session.user = usr;
-//         req.session.role = validated.role;
-//         if (usr === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
-//             req.session.role = 'admin';
-//         }      
-//         res.redirect(baseURL+'products');
-//     } else {
-//         req.session.userValidated = false;
-//         req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
-//         res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } });
-//     }
-// });
-
-router.post('/login', passport.authenticate('login', { failureRedirect: 'login' }), async (req, res) => {
-    console.log(req.user);
-    if (!req.user) {
-        req.session.userValidated = false;
-        req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
-        res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } });
-    } else {
-        req.session.userValidated = true;
-        req.session.errorMessage = '';
-        req.session.user = req.user.email;
-        req.session.role = req.user.role;
-        if (req.user === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
-            req.session.role = 'admin';
-        }      
-        res.redirect(baseURL+'products');
-
-    }
-});
-
-router.get('/faillogin', (req,res) => {
-    req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
-    res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } });
-})
-
-
-router.post('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (!err) res.redirect(baseURL);
-        else res.send({ status: 'Error al hacer logout', body: err })
-    });
-});
-
-
 function auth(req, res, next) {
-
     if (req.session?.user) {
         return next();
     }
