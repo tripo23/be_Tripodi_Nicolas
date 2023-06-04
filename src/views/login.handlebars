@@ -35,12 +35,12 @@
         <form class="p-4 login-form" action="http://localhost:3030/login" method="post">
             <label for="">Iniciar sesión</label>
             <div class="form-group mb-4">
-                <input type="email" class="form-control" id="usr" name="usr" aria-describedby="emailHelp"
+                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
                     placeholder="Ingresa tu mail" required="required">
             </div>
 
             <div class="form-group mb-4">
-                <input type="password" class="form-control" id="pass" name="pass" required="required" placeholder="Contraseña">
+                <input type="password" class="form-control" id="password" name="password" required="required" placeholder="Contraseña">
             </div>
 
             <button type="submit" class="btn btn-success"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</button>
@@ -56,7 +56,7 @@
 </div>
 
 <script>
-    document.getElementById('usr').focus();
+    document.getElementById('email').focus();
 </script>
 
 
