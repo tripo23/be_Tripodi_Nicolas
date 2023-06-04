@@ -55,6 +55,7 @@ router.get('/api/sessions/githubcallback', passport.authenticate('github', { fai
     
     // req.session.userValidated = true;
     // req.session.errorMessage = '';
+    console.log(req.session.user);
     req.session.user = req.user.email;
     req.session.role = req.user.role;
     res.redirect(baseURL+'products');

@@ -56,13 +56,47 @@ const initializePassport = () => {
     const githubData = {
         clientID: process.env.GH_clientID,
         clientSecret: process.env.GH_clientSecret,
-        callbackUrl: process.env.GH_callbackUrl
+        callbackUrl: process.env.GH_callbackUrl,
+        scope: ['user:email'] 
     };
+
+    const verifyAuthGithubTEST = async (accessToken, refreshToken, profile, done) => {
+        try {
+           
+            const email = profile._json.email;
+            email ? console.log(email) : console.log('no hay email');
+            // if (email) {
+                const user = await userModel.findOne({ email: email });
+                console.log(user);
+                if (!user) {
+                    // const newUser = {
+                    //     firstName: profile._json.name,
+                    //     lastName: '',
+                    //     email: profile._json.email,
+                    //     age:'',
+                    //     password: ''
+                    // }
+                    // let result = await userModel.create(newUser);
+                    // console.log(result);
+                    // done(null,result);
+                    
+                } else {
+                    console.log('vine por el else');
+                    done(null, user);
+                }
+            // } else {
+            //     console.log('Email not provided by GitHub');
+            //     done('Email not provided by GitHub');
+            // }
+        } catch (err) {
+            return done(err.message);
+        }
+    }
 
     const verifyAuthGithub = async (accessToken, refreshToken, profile, done) => {
         try {
             // console.log(profile._json);
-            const user = await userModel.findOne({ userName: profile._json.email });
+            const user = await userModel.findOne({ email: profile._json.email });
 
             if (!user) {
                 // const [first, last] = fullName.split(' ');
