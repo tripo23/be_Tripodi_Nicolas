@@ -4,8 +4,10 @@ import { Server } from 'socket.io';
 import express from "express";
 import mongoose from 'mongoose';
 import session from 'express-session';
-//import fileStore from 'session-file-store';
 import mongoStore from 'connect-mongo'
+
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 
 import exphbs from 'express-handlebars';
 import { __dirname } from './utils.js';
@@ -87,6 +89,9 @@ server.use(session({
   resave: true,
   saveUninitialized: true
 }));
+initializePassport();
+server.use(passport.initialize());
+server.use(passport.session());
 
 
 
