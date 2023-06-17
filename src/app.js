@@ -1,5 +1,5 @@
-import {} from 'dotenv/config';
-
+import dotenv from 'dotenv';
+import path from 'path';
 import { Server } from 'socket.io';
 import express from "express";
 import mongoose from 'mongoose';
@@ -20,6 +20,7 @@ import viewRoutes from './routes/view_routes.js'
 import sessionRoutes from './routes/session_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
+dotenv.config({path: path.join(__dirname, '..', '.env')});
 
 const port = parseInt(process.env.port) || 3030;
 const ws_port = parseInt(process.env.ws_port) || 8080;
