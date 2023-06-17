@@ -61,4 +61,8 @@ router.get('/api/sessions/githubcallback', passport.authenticate('github', { fai
     res.redirect(baseURL+'products');
 });
 
+router.get('/api/sessions/current', (req, res) => {
+    res.send(req.session.user);
+})
+
 export default router;
