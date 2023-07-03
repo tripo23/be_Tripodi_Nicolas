@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import cartsModel from "./models/carts.model.js";
-import productModel from "./models/products.model.js";
+import cartsModel from "../models/carts.model.js";
+import productModel from "../models/products.model.js";
 
 class CartManager {
   static notFound = "err";

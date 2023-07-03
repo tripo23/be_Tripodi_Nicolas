@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-import path from 'path';
+import config from './config.js';
+//import path from 'path';
 import { Server } from 'socket.io';
 import express from "express";
 import mongoose from 'mongoose';
@@ -20,12 +20,12 @@ import viewRoutes from './routes/view_routes.js'
 import sessionRoutes from './routes/session_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
-dotenv.config({path: path.join(__dirname, '..', '.env')});
+//dotenv.config({path: path.join(__dirname, '..', '.env')});
 
-const port = parseInt(process.env.port) || 3030;
-const ws_port = parseInt(process.env.ws_port) || 8080;
-const mongoose_url = process.env.mongoose_url;
-const secret_session = process.env.secret_session;
+const port = parseInt(config.port) || 3030;
+const ws_port = parseInt(config.ws_port) || 8080;
+const mongoose_url = config.mongoose_url;
+const secret_session = config.secret_session;
 
 
 
@@ -129,7 +129,4 @@ wss.on('connection', (socket) => {
     socket.emit('historyMsg', historyMsg )
   })
 })
-
-
-
 

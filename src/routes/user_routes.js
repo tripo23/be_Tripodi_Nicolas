@@ -1,12 +1,8 @@
 import { Router } from "express";
-import ProductManager from '../dao/productManager.dbclass.js';
-import UserManager from '../dao/userManager.dbclass.js';
 import passport from 'passport';
 
-const user = new UserManager();
 const router = Router();
 
-const baseURL = 'http://localhost:3030/'
 
 
 router.get('/signup', (req, res) => {
