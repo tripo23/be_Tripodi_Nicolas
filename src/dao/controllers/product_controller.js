@@ -1,7 +1,9 @@
-import ProductManager from '../services/productManager.dbclass.js';
+
+//import {factoryProduct} from '../services/factory.js';
+import { ProductManager } from '../services/productManager.dbclass.js';
 
 const producto = new ProductManager();
-
+//const producto = new factoryProduct();
 
 
 export const getProducts = async (req, res) => {

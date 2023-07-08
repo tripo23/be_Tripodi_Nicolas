@@ -123,4 +123,4 @@ class ProductManager {
     }
 }
 
-export default ProductManager;
+export { ProductManager as mongoProduct, ProductManager };

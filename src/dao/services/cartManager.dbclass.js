@@ -147,5 +147,4 @@ class CartManager {
     }
   }
 }
-
-export default CartManager;
+export { CartManager as mongoCart, CartManager };

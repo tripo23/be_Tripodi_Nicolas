@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductManager from '../dao/services/productManager.dbclass.js';
+import {ProductManager} from '../dao/services/productManager.dbclass.js';
 import { addProduct, chat, deleteProduct, getProducts, productByPID, realTimeProducts, realTimeProductsPost, updateProduct } from "../dao/controllers/product_controller.js";
 
 const producto = new ProductManager();

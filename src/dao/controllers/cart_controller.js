@@ -1,5 +1,8 @@
-import CartManager from '../services/cartManager.dbclass.js';
+//import {factoryCart} from '../services/factory.js';
 
+import { CartManager } from '../services/cartManager.dbclass.js';
+
+//const cart = new factoryCart();
 const cart = new CartManager();
 
 export const carts = async (req, res) => {

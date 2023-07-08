@@ -94,4 +94,4 @@ class CartManager {
 
 }
 
-export default CartManager;
+export { CartManager as memCart, CartManager };

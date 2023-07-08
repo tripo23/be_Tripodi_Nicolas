@@ -22,7 +22,8 @@ const config = {
     port: process.env.port,
     ws_port: process.env.ws_port,
     mongoose_url: process.env.mongoose_url,
-    secret_session: process.env.secret_session
+    secret_session: process.env.secret_session,
+    persistence: process.env.persistence
 }
 
 export default config;
