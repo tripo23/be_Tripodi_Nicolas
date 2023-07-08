@@ -127,4 +127,4 @@ class ProductManager {
     }
 }
 
-export default ProductManager;
+export { ProductManager as memProduct, ProductManager };
