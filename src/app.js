@@ -39,7 +39,8 @@ const httpServer = server.listen(ws_port, () => {
 const wss = new Server(httpServer, {
     cors: {
         origin: `http://localhost:${port}`,
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: 'Content-Type, Authorization',
     }
 });
 

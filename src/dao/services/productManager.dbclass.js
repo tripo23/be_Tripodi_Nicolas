@@ -24,19 +24,19 @@ class ProductManager {
 
     handlePostRequest(req, res) {
         try {
-          const { error, value } = this.schema.validate(req.body);
-          if (error) {
-            const err = [false, error]
-            return err;
-          } 
-          return value;
+            const { error, value } = this.schema.validate(req.body);
+            if (error) {
+                const err = [false, error]
+                return err;
+            }
+            return value;
 
         } catch (error) {
-          // Handle any other errors that may occur during validation or object addition
-          console.error(error);
-          return res.status(500).json({ error: 'Internal Server Error' });
+            // Handle any other errors that may occur during validation or object addition
+            console.error(error);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
+    }
 
     addProduct = async (objProduct) => {
         try {
@@ -53,24 +53,24 @@ class ProductManager {
                     code: objProduct.code,
                     stock: objProduct.stock,
                     category: objProduct.category
-                    };
-    
+                };
+
                 const process = await productsModel.create(newProduct);
                 console.log('Producto agregado.');
                 return newProduct;
-            }       
-        } catch(err) {
+            }
+        } catch (err) {
             console.log(err);
         }
     }
 
     getProducts = async (options, query) => {
-        
-        
+
+
         let queryObject = {};
         const field = query.field;
         let value = query.value;
-        
+
         if (field === "stock") {
             queryObject = {
                 stock: { $gt: query.value }
@@ -78,10 +78,10 @@ class ProductManager {
         } else {
             queryObject[field] = value;
         }
-   
+
         const process = await productsModel.paginate(queryObject, options);
-        
-        this.products = process.docs.map( doc => doc.toObject ( {getters: false}));
+
+        this.products = process.docs.map(doc => doc.toObject({ getters: false }));
         return process
     }
 
@@ -94,8 +94,8 @@ class ProductManager {
         }
     }
 
-    updateProduct = async (id, data) => {      
-       
+    updateProduct = async (id, data) => {
+
         try {
             // Con mongoose.Types.ObjectId realizamos el casting para que el motor reciba el id en el formato correcto
             const process = await productsModel.updateOne({ '_id': new mongoose.Types.ObjectId(id) }, data);
@@ -118,7 +118,7 @@ class ProductManager {
         try {
             this.products = await productsModel.find().lean();
         } catch (error) {
-            this.products=[];
+            this.products = [];
         }
     }
 }
