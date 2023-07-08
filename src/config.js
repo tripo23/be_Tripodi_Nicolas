@@ -17,6 +17,7 @@ const cl_options = program.opts();
 dotenv.config({ path: cl_options.mode == 'DEVEL' ? '../.env.development': '../.env.production' });
 
 // Simplemente exportamos un objeto config con las distintas variables tomadas del process.env
+
 const config = {
     port: process.env.port,
     ws_port: process.env.ws_port,

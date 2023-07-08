@@ -1,13 +1,12 @@
 import config from './config.js';
-//import path from 'path';
 import { Server } from 'socket.io';
 import express from "express";
-import mongoose from 'mongoose';
 import session from 'express-session';
 import mongoStore from 'connect-mongo'
 
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
+import MongoSingleton from './dao/services/mongo_class.js';
 
 import exphbs from 'express-handlebars';
 import { __dirname } from './utils.js';
@@ -20,7 +19,6 @@ import viewRoutes from './routes/view_routes.js'
 import sessionRoutes from './routes/session_routes.js'
 import messageModel from './dao/models/messages.model.js';
 
-//dotenv.config({path: path.join(__dirname, '..', '.env')});
 
 const port = parseInt(config.port) || 3030;
 const ws_port = parseInt(config.ws_port) || 8080;
@@ -52,8 +50,7 @@ server.use(express.urlencoded({extended: true}));
 
 // Inicialización del servidor
 try {
-  await mongoose.connect(mongoose_url);
-
+  MongoSingleton.getInstance();
   server.listen(port, () => {
     console.log(`Servidor base API / static iniciado en puerto ${port}`);
   });  
