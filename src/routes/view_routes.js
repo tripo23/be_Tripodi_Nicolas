@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {CartManager} from '../dao/services/cartManager.dbclass.js';
 import {ProductManager} from '../dao/services/productManager.dbclass.js';
+import { auth } from '../utils.js';
 
 const producto = new ProductManager();
 const cart = new CartManager('./carrito.json');
@@ -14,7 +15,7 @@ router.get('/products', auth, async (req, res) => {
     res.render('products', { products: prodRender, user: req.session.user, role: req.session.role });
 });
 
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", auth, async (req, res) => {
     const selectedCart = await cart.getCartByID(req.params.cid);
     if (selectedCart == "err") {
         res.status(404).json({ error: "No existe cart con ese ID" });
@@ -37,14 +38,7 @@ router.get("/carts/:cid", async (req, res) => {
     }
 });
 
-function auth(req, res, next) {
-    if (req.session?.user) {
-        return next();
-    }
-    res.render('login', {
-        sessionInfo: req.sessionStore
-    });
-}
+
 
 
 export default router;

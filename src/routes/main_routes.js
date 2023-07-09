@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {ProductManager} from '../dao/services/productManager.dbclass.js';
-
+import { auth } from '../utils.js';
 
 const producto = new ProductManager();
 const router = Router();
@@ -32,13 +32,5 @@ router.get('/', auth, async (req, res) => {
     res.status(200).send(object);
 });
 
-function auth(req, res, next) {
-    if (req.session?.user) {
-        return next();
-    }
-    res.render('login', {
-        sessionInfo: req.sessionStore
-    });
-}
 
 export default router;

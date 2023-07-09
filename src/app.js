@@ -95,7 +95,6 @@ server.use(passport.session());
 
 
 
-
 // Endpoints API REST
 server.use('/api', routerProd);
 server.use('/api', routerCart);

@@ -12,4 +12,33 @@ const isValidPassword = (userInDb, pass) => {
     return bcrypt.compareSync(pass, userInDb.password);
 }
 
-export { __filename, __dirname, createHash, isValidPassword };
+function auth(req, res, next) {
+    if (req.session?.user) {
+        return next();
+    }
+    res.render('login', {
+        sessionInfo: req.sessionStore
+    });
+}
+
+function adminOnly(req, res, next) {
+    if (req.session?.role == 'admin') {
+        console.log(req.session.role);
+        return next();
+    } else {
+        console.log(req.session.role);
+        res.render('forbidden');
+    }
+}
+
+function userOnly(req, res, next) {
+    if (req.session?.role == 'user') {
+        console.log(req.session.role);
+        return next();
+    } else {
+        console.log(req.session.role);
+        res.render('forbidden');
+    }
+}
+
+export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly };
