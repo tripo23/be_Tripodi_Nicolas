@@ -41,4 +41,15 @@ function userOnly(req, res, next) {
     }
 }
 
-export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly };
+function generateTicketCode() {
+    const characters = '0123456789ABCDEF';
+    let hexCode = '';
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        hexCode += characters[randomIndex];
+    }
+    return hexCode;
+}
+
+
+export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, generateTicketCode };

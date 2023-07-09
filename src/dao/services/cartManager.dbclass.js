@@ -126,6 +126,7 @@ class CartManager {
   };
 
   deleteAllProducts = async (data) => {
+    console.log(data.cid);
     try {
       let cartToUpdate = await this.getCartByID(data.cid);
       if (cartToUpdate == CartManager.notFound) {

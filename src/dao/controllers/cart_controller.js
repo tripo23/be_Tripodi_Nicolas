@@ -1,9 +1,12 @@
 //import {factoryCart} from '../services/factory.js';
-
+import { TicketManager } from '../services/ticketManager.dbclass.js';
 import { CartManager } from '../services/cartManager.dbclass.js';
+import { ProductManager } from '../services/productManager.dbclass.js';
 
-//const cart = new factoryCart();
+
+const producto = new ProductManager();
 const cart = new CartManager();
+const ticket = new TicketManager();
 
 export const carts = async (req, res) => {
     const selectedCart = await cart.getCartByID(req.params.cid);
@@ -13,6 +16,91 @@ export const carts = async (req, res) => {
         res.status(200).send(selectedCart)
     }
 };
+
+export const purchase = async (req, res) => {
+    const cid = req.params.cid;
+    const selectedCart = await cart.getCartByID(cid);
+    if (selectedCart == "err") {
+        res.status(404).json({ error: "No existe cart con ese ID" });
+    } else {
+        const currentProducts = selectedCart.products;
+
+        // Me quedo con los productos del carrito y la cantidad de cada uno
+        const extractedData = currentProducts.map((item) => {
+            const { product, quantity } = item;
+            return {
+                pid: product._id.toString(),
+                quantity,
+            };
+        });
+
+        //Traigo los productos con stock.
+        const hasStock = await extractedData.reduce(async (result, item) => {
+            const hasSufficientStock = await producto.checkStock({ pid: item.pid, quantity: item.quantity });
+            if (hasSufficientStock) {
+                const previousResult = await result;
+                return [...previousResult, item];
+            }
+            return result;
+        }, Promise.resolve([]));
+
+
+        //Hago lo propio para los que no tienen stock suficiente.
+        const itemsWithoutStock = await (async () => {
+            return extractedData.reduce(async (accumulatorPromise, item) => {
+                const accumulator = await accumulatorPromise;
+                const hasStock = await producto.checkStock(item);
+                if (!hasStock) {
+                    accumulator.push(item);
+                }
+                return accumulator;
+            }, []);
+        })();
+
+        // Resto el stock de los productos agregados.
+        await producto.decreaseStock(hasStock);
+
+        // Vacío el carrito 
+        await cart.deleteAllProducts({cid});
+        
+        //Cargo los productos sin stock al carrito
+        for (const item of itemsWithoutStock) {
+            const data = {
+                cid: cid, 
+                pid: item.pid,
+                quantity: item.quantity
+            }
+            await cart.addProductToCart(data);
+        }
+
+        // Calculo el total del carrito
+        let total = 0;
+        for (const item of hasStock) {
+            const unitPrice = await producto.checkPrice(item.pid)
+            const pricePerProduct = parseInt(unitPrice) * parseInt(item.quantity);
+            total += pricePerProduct
+        }
+
+        // Mando a crear el ticket
+        const ticketData = {
+            amount: total,
+        }
+        const tid = await ticket.newTicket(ticketData);
+
+        //Agrego los productos al ticket
+        for (const item of hasStock) {
+            await ticket.addProducts(tid, item);
+        }
+
+        //Me guardo en una variable el ticket completo
+        const ticketComplete = await ticket.getTicketById(tid);
+
+        console.log('elementos comprados ', hasStock);
+        console.log('elementos pendientes ', itemsWithoutStock);
+
+        res.status(200).send(ticketComplete)
+    }
+}
 
 export const AddNewCart = async (req,res) => {
     const cartID = await cart.newCart();

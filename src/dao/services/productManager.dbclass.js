@@ -98,6 +98,7 @@ class ProductManager {
 
         try {
             // Con mongoose.Types.ObjectId realizamos el casting para que el motor reciba el id en el formato correcto
+            console.log(id);
             const process = await productsModel.updateOne({ '_id': new mongoose.Types.ObjectId(id) }, data);
         } catch (error) {
             console.log(error);
@@ -112,6 +113,34 @@ class ProductManager {
         } catch (err) {
             console.log(err);
         }
+    }
+
+    checkStock = async (data) => {
+        await this.load();
+        const current = await this.getProductById(data.pid);
+        if (current.stock >= parseInt(data.quantity)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    decreaseStock = async (data) => {
+        for (const item of data) {
+            try {
+                const current = await this.getProductById(item.pid);
+                const newStock = parseInt(current.stock) - parseInt(item.quantity);
+                const process = await productsModel.updateOne({ '_id': new mongoose.Types.ObjectId(item.pid) }, { $set: { stock: newStock } });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    checkPrice = async (pid) => {
+        await this.load();
+        const current = await this.getProductById(pid);
+        return current.price
     }
 
     async load() {
