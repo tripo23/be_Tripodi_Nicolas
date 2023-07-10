@@ -38,9 +38,6 @@ class TicketManager {
     }
 
     addProducts = async (tid, product ) => {
-        console.log(tid);
-        console.log(product.quantity);
-        console.log(product.pid);
         try {
             const ticketToUpdate = await this.getTicketById(tid);
             if (ticketToUpdate == TicketManager.notFound) {

@@ -2,6 +2,7 @@
 import { TicketManager } from '../services/ticketManager.dbclass.js';
 import { CartManager } from '../services/cartManager.dbclass.js';
 import { ProductManager } from '../services/productManager.dbclass.js';
+import { transport } from '../../config/nodemailer.config.js'
 
 
 const producto = new ProductManager();
@@ -44,6 +45,11 @@ export const purchase = async (req, res) => {
             return result;
         }, Promise.resolve([]));
 
+        if (hasStock.length === 0) {
+            console.log('No hay stock suficiente');
+            res.status(404).json({ error: "No hay stock suficiente para ninguno de los productos seleccionados" });
+            return;
+        }
 
         //Hago lo propio para los que no tienen stock suficiente.
         const itemsWithoutStock = await (async () => {
@@ -94,9 +100,10 @@ export const purchase = async (req, res) => {
 
         //Me guardo en una variable el ticket completo
         const ticketComplete = await ticket.getTicketById(tid);
+        // console.log('ticket id', tid);
+        // console.log(ticketComplete.products);
 
-        console.log('elementos comprados ', hasStock);
-        console.log('elementos pendientes ', itemsWithoutStock);
+        await sendTicketByMail(req, res, ticketComplete);
 
         res.status(200).send(ticketComplete)
     }
@@ -141,7 +148,6 @@ export const updateCart = async (req,res) => {
 export const addArrayToCart = async (req,res) => {
     const cid = req.params.cid;
     const data = req.body;
-    console.log(req.body);
     const cartUpdate = await cart.addArrayToCart(data, cid);
     
     if (cartUpdate == 'err') {
@@ -178,3 +184,32 @@ export const deleteAllProducts = async (req,res) => {
         res.status(200).json({message: 'Productos eliminados'});
     }
 };
+
+export const sendTicketByMail = async (req, res, data) => {
+    const ticketProducts = data.products;
+    const productListHTML = ticketProducts.map(prod => `
+        <li>
+            <strong>${prod.product.title}</strong>
+            <br>
+            Quantity: ${prod.quantity}
+            <br>
+            Price: $${prod.product.price}
+        </li>
+    `).join('');
+    const result = await transport.sendMail({
+        from: 'tripodi.nicolas@gmail.com',
+        // to: req.session.user.email,
+        to: 'tripodi.nicolas@gmail.com',
+        subject: 'Your Purchase Receipt',
+        html: `
+        <h2>Thank you for your purchase!</h2>
+        <p>Here are the details of your purchase:</p>
+        <ul>
+            ${productListHTML}
+        </ul>
+        <h3>
+        Total: $${data.amount}
+        </h3>
+    `
+    });
+}

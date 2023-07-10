@@ -98,7 +98,6 @@ class ProductManager {
 
         try {
             // Con mongoose.Types.ObjectId realizamos el casting para que el motor reciba el id en el formato correcto
-            console.log(id);
             const process = await productsModel.updateOne({ '_id': new mongoose.Types.ObjectId(id) }, data);
         } catch (error) {
             console.log(error);

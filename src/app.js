@@ -1,4 +1,4 @@
-import config from './config.js';
+import config from './config/config.js';
 import { Server } from 'socket.io';
 import express from "express";
 import session from 'express-session';
