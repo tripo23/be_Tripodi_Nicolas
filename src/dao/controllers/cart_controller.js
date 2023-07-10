@@ -112,7 +112,10 @@ export const purchase = async (req, res) => {
 export const AddNewCart = async (req,res) => {
     const cartID = await cart.newCart();
     const message = `Carrito enviado con id  ${cartID}`;
-    res.status(200).json({message, cartID});
+    if (res) {
+        res.status(200).json({message, cartID});
+    }
+    return cartID;
 };
 
 export const AddProductToCart = async (req,res) => {
@@ -198,8 +201,8 @@ export const sendTicketByMail = async (req, res, data) => {
     `).join('');
     const result = await transport.sendMail({
         from: 'tripodi.nicolas@gmail.com',
-        // to: req.session.user.email,
-        to: 'tripodi.nicolas@gmail.com',
+        to: req.session.user,
+        //to: 'tripodi.nicolas@gmail.com',
         subject: 'Your Purchase Receipt',
         html: `
         <h2>Thank you for your purchase!</h2>

@@ -3,8 +3,6 @@ import passport from 'passport';
 
 const router = Router();
 
-
-
 router.get('/signup', (req, res) => {
     res.render('signup');
 });

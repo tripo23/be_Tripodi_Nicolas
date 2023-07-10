@@ -12,7 +12,7 @@ const baseURL = 'http://localhost:3030/'
 router.get('/products', auth, async (req, res) => {
     await producto.load();
     const prodRender = producto.products;
-    res.render('products', { products: prodRender, user: req.session.user, role: req.session.role });
+    res.render('products', { products: prodRender, user: req.session.user, role: req.session.role, cart: req.session.cart });
 });
 
 router.get("/carts/:cid", auth, async (req, res) => {

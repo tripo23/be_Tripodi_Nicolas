@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Cart </title>
+  <title>Cart</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
-  <h1>Cart </h1>
+  <h1>Cart</h1>
   <h3>{{this.cartID}}</h3>
   <table style="text-align: center;">
     <thead>
@@ -18,16 +21,30 @@
     </thead>
     <tbody>
       {{#each products}}
-        <tr>
-          <td>{{this.product._id}}</td>
-          <td>{{this.product.title}}</td>
-          <td>{{this.quantity}}</td>
-          <td>{{this.product.price}}</td>
-          <td>{{this.subtotal}}</td>
-        </tr>
+      <tr>
+        <td>{{this.product._id}}</td>
+        <td>{{this.product.title}}</td>
+        <td>{{this.quantity}}</td>
+        <td>{{this.product.price}}</td>
+        <td>{{this.subtotal}}</td>
+      </tr>
       {{/each}}
     </tbody>
   </table>
   <h2>Total: {{this.total}}</h2>
+  <input type="hidden" id="cartId" value="{{this.cartID}}">
+  <!-- Add the Bootstrap-styled "Checkout" button -->
+  <button class="btn btn-primary" type="button" onclick="checkout()">Checkout</button>
+
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function checkout() {
+      const cartID = document.getElementById('cartId').value;
+      const url = `http://localhost:3030/api/carts/${cartID}/purchase`;
+      window.location.href = url;
+    }
+  </script>
 </body>
+
 </html>

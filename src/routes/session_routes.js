@@ -17,7 +17,6 @@ router.get('/login', (req,res) => {
 })
 
 router.post('/login', passport.authenticate('login', { failureRedirect: 'login' }), async (req, res) => {
-    console.log(req.user);
     if (!req.user) {
         req.session.userValidated = false;
         req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
@@ -27,11 +26,11 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'login' 
         req.session.errorMessage = '';
         req.session.user = req.user.email;
         req.session.role = req.user.role;
+        req.session.cart = req.user.cart
         if (req.user.email === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
             req.session.role = 'admin';
         }      
         res.redirect(baseURL+'products');
-
     }
 });
 
@@ -55,9 +54,9 @@ router.get('/api/sessions/githubcallback', passport.authenticate('github', { fai
     
     // req.session.userValidated = true;
     // req.session.errorMessage = '';
-    console.log(req.session.user);
     req.session.user = req.user.email;
     req.session.role = req.user.role;
+    req.session.cart = req.user.cart;
     res.redirect(baseURL+'products');
 });
 

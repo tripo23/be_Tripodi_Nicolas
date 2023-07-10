@@ -1,7 +1,7 @@
 
 //import {factoryProduct} from '../services/factory.js';
 import { ProductManager } from '../services/productManager.dbclass.js';
-
+import { AddNewCart } from "./cart_controller.js";
 const producto = new ProductManager();
 //const producto = new factoryProduct();
 
@@ -9,7 +9,6 @@ const producto = new ProductManager();
 export const getProducts = async (req, res) => {
     // /?limit=2&page=1&sort=-1&field=category&value=electronics
     // /?sort=-1&field=stock&value=10 MIRA SI el stock es >10
-
     const options = {
         limit: req.query.limit ? req.query.limit : 10,
         sort: req.query.sort ? { precio: req.query.sort } : {},
@@ -25,7 +24,7 @@ export const getProducts = async (req, res) => {
     }
 
     const object = await producto.getProducts(options, query);
-    //res.status(200).render('home', { productos: prodRender }); 
+
     res.status(200).send(object);
 };
 
