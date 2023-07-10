@@ -39,7 +39,7 @@ class CartManager {
         return "err";
       } else {
             const productId = new mongoose.Types.ObjectId(data.pid);
-            const productToUpdate = cartToUpdate.products.find(prod => prod._id.equals(productId));
+            const productToUpdate = cartToUpdate.products.find(prod => prod.product._id.toString() == productId.toString());
             if (productToUpdate) {
                 productToUpdate.quantity = productToUpdate.quantity + parseInt(data.quantity);
             } else {
