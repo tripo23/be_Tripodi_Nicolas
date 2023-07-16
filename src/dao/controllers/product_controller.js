@@ -1,7 +1,7 @@
 
 //import {factoryProduct} from '../services/factory.js';
 import { ProductManager } from '../services/productManager.dbclass.js';
-import { AddNewCart } from "./cart_controller.js";
+import { newFakeProduct } from '../../utils.js';
 const producto = new ProductManager();
 //const producto = new factoryProduct();
 
@@ -94,4 +94,10 @@ export const addProduct = async (req, res) => {
         producto.addProduct(data)
         res.status(200).json({ message: 'Producto enviado' });
     }
+}
+
+export const fakeProduct = async (req, res) => {
+    const fakeProducts = [];
+    for (let i = 0; i < 100; i++) { fakeProducts.push(newFakeProduct()) }
+    res.send({ status: 'OK', payload: fakeProducts });
 }
