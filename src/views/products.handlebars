@@ -153,6 +153,7 @@
   <script>
     function addToCart(productId) {
       const cartId = document.getElementById('cartId').value;
+      const urlCart = `http://localhost:3030/carts/${cartId}`;
       fetch(`/api/carts/${cartId}/product/${productId}`, {
         method: 'POST',
         headers: {
@@ -164,8 +165,8 @@
           Toastify({
             text: "Producto Agregado al Carrito",
             duration: 3000,
-            destination: "https://github.com/apvarun/toastify-js",
-            newWindow: true,
+            destination: urlCart,
+            newWindow: false,
             close: true,
             gravity: "top", // `top` or `bottom`
             position: "right", // `left`, `center` or `right`

@@ -15,7 +15,7 @@ router.post('/realtimeproducts', realTimeProductsPost);
 router.get('/products/:pid/', productByPID);
 router.put('/products/:pid/', adminOnly, updateProduct);
 router.delete('/products/:pid/', adminOnly, deleteProduct);
-router.post('/products', adminOnly, addProduct);
+router.post('/products', addProduct);
 
 
 export default router;

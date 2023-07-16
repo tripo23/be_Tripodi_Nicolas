@@ -8,8 +8,11 @@ import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import MongoSingleton from './dao/services/mongo_class.js';
 
+import CustomError from './dao/services/customError.js';
+import { __dirname, errorsDict } from './utils.js';
+
+
 import exphbs from 'express-handlebars';
-import { __dirname } from './utils.js';
 
 import routerProd from './routes/products_routes.js';
 import routerCart from './routes/carts_routes.js';
@@ -104,6 +107,18 @@ server.use('/', mainRoutes);
 server.use('/', userRoutes);
 server.use('/', sessionRoutes);
 server.use('/', viewRoutes)
+
+//Captura de errores en rutas
+
+server.all('*', (req, res) => {
+  throw new CustomError(errorsDict.ROUTING_ERROR);
+})
+
+server.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).send({ status: 'ERR', payload: { msg: err.message } });
+})
+
 
 // Contenidos estáticos
 server.use('/static', express.static(__dirname + '/public'))
