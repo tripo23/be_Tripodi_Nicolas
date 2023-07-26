@@ -32,5 +32,12 @@ router.get('/', auth, async (req, res) => {
     res.status(200).send(object);
 });
 
+router.get('/loggerTest', async (req, res) => {
+    req.logger.warn(`Alerta! - ${new Date().toLocaleTimeString()}`);
+    req.logger.info(`Info! - ${new Date().toLocaleTimeString()}`);
+    req.logger.error(`Error! - ${new Date().toLocaleTimeString()}`);
+    res.send({message: 'alerta'});
+})
+
 
 export default router;

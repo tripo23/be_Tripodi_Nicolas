@@ -24,7 +24,7 @@ export const getProducts = async (req, res) => {
     }
 
     const object = await producto.getProducts(options, query);
-
+    req.logger.info(`products getted - ${new Date().toLocaleTimeString()}`);
     res.status(200).send(object);
 };
 
@@ -77,11 +77,13 @@ export const productByPID = async (req, res) => {
 export const updateProduct = async (req, res) => {
     const data = req.body;
     await producto.updateProduct(req.params.pid, data);
+    req.logger.info(`product updated - ${new Date().toLocaleTimeString()}`);
     res.status(200).json({ message: 'Producto actualizado' });
 }
 
 export const deleteProduct = async (req, res) => {
     await producto.deleteProduct(req.params.pid);
+    req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
     res.status(200).json({ message: 'Producto eliminado' });
 }
 
@@ -89,9 +91,12 @@ export const addProduct = async (req, res) => {
     const handled = await producto.handlePostRequest(req, res);
     const data = req.body;
     if (handled[0] == false) {
+        req.logger.error(`cannot add product - ${new Date().toLocaleTimeString()}`);
         res.status(400).json({ error: handled[1].details[0].message })
+
     } else {
         producto.addProduct(data)
+        req.logger.info(`product added - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({ message: 'Producto enviado' });
     }
 }

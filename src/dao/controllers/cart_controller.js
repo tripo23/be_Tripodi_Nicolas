@@ -12,6 +12,7 @@ const ticket = new TicketManager();
 export const carts = async (req, res) => {
     const selectedCart = await cart.getCartByID(req.params.cid);
     if (selectedCart == "err") {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({ error: "No existe cart con ese ID" });
     } else {
         res.status(200).send(selectedCart)
@@ -22,6 +23,7 @@ export const purchase = async (req, res) => {
     const cid = req.params.cid;
     const selectedCart = await cart.getCartByID(cid);
     if (selectedCart == "err") {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({ error: "No existe cart con ese ID" });
     } else {
         const currentProducts = selectedCart.products;
@@ -46,7 +48,7 @@ export const purchase = async (req, res) => {
         }, Promise.resolve([]));
 
         if (hasStock.length === 0) {
-            console.log('No hay stock suficiente');
+            req.logger.error(`no products with stock - ${new Date().toLocaleTimeString()}`);
             res.status(404).json({ error: "No hay stock suficiente para ninguno de los productos seleccionados" });
             return;
         }
@@ -65,6 +67,7 @@ export const purchase = async (req, res) => {
 
         // Resto el stock de los productos agregados.
         await producto.decreaseStock(hasStock);
+        req.logger.info(`stock consumed - ${new Date().toLocaleTimeString()}`);
 
         // Vacío el carrito 
         await cart.deleteAllProducts({cid});
@@ -77,6 +80,7 @@ export const purchase = async (req, res) => {
                 quantity: item.quantity
             }
             await cart.addProductToCart(data);
+            req.logger.info(`no stock products added to cart - ${new Date().toLocaleTimeString()}`);
         }
 
         // Calculo el total del carrito
@@ -92,6 +96,7 @@ export const purchase = async (req, res) => {
             amount: total,
         }
         const tid = await ticket.newTicket(ticketData);
+        req.logger.info(`ticket created - ${new Date().toLocaleTimeString()}`);
 
         //Agrego los productos al ticket
         for (const item of hasStock) {
@@ -104,6 +109,7 @@ export const purchase = async (req, res) => {
         // console.log(ticketComplete.products);
 
         await sendTicketByMail(req, res, ticketComplete);
+        req.logger.info(`ticket sent by mail - ${new Date().toLocaleTimeString()}`);
 
         res.status(200).send(ticketComplete)
     }
@@ -113,6 +119,7 @@ export const AddNewCart = async (req,res) => {
     const cartID = await cart.newCart();
     const message = `Carrito enviado con id  ${cartID}`;
     if (res) {
+        req.logger.info(`cart created - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({message, cartID});
     }
     return cartID;
@@ -127,8 +134,10 @@ export const AddProductToCart = async (req,res) => {
     const cartUpdate = await cart.addProductToCart(data);
     
     if (cartUpdate == 'err') {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({error: 'No existe cart con ese ID'});
     } else {
+        req.logger.info(`product added to cart - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({message: 'Carrito actualizado'});
     }
 };
@@ -142,8 +151,10 @@ export const updateCart = async (req,res) => {
     const cartUpdate = await cart.updateQuantity(data);
     
     if (cartUpdate == 'err') {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({error: 'No existe cart con ese ID'});
     } else {
+        req.logger.info(`cart updated - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({message: 'Carrito actualizado'});
     }
 };
@@ -154,8 +165,10 @@ export const addArrayToCart = async (req,res) => {
     const cartUpdate = await cart.addArrayToCart(data, cid);
     
     if (cartUpdate == 'err') {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({error: 'No existe cart con ese ID'});
     } else {
+        req.logger.info(`cart updated - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({message: 'Carrito actualizado'});
     }
 };
@@ -169,8 +182,10 @@ export const deleteProductFromCart = async (req,res) => {
     const cartUpdate = await cart.deleteProductFromCart(data);
     
     if (cartUpdate == 'err') {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({error: 'No existe cart o prod con ese ID'});
     } else {
+        req.logger.info(`product deleted from cart - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({message: 'Producto eliminado'});
     }
 };
@@ -182,8 +197,10 @@ export const deleteAllProducts = async (req,res) => {
     const cartUpdate = await cart.deleteAllProducts(data);
     
     if (cartUpdate == 'err') {
+        req.logger.error(`cart not found - ${new Date().toLocaleTimeString()}`);
         res.status(404).json({error: 'No existe cart con ese ID'});
     } else {
+        req.logger.info(`all products deleted from cart - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({message: 'Productos eliminados'});
     }
 };
@@ -215,4 +232,5 @@ export const sendTicketByMail = async (req, res, data) => {
         </h3>
     `
     });
+
 }

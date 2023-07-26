@@ -10,7 +10,7 @@ import MongoSingleton from './dao/services/mongo_class.js';
 
 import CustomError from './dao/services/customError.js';
 import { __dirname, errorsDict } from './utils.js';
-
+import { addLogger } from './dao/services/logger.service.js';
 
 import exphbs from 'express-handlebars';
 
@@ -50,7 +50,7 @@ const wss = new Server(httpServer, {
 
 server.use(express.json());
 server.use(express.urlencoded({extended: true}));
-
+server.use(addLogger);
 
 
 // Inicialización del servidor

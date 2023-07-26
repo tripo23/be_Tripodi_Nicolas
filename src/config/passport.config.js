@@ -30,8 +30,10 @@ const initializePassport = () => {
                 cart: cartID
             }
             let result = await userModel.create(newUser);
+            req.logger.info(`new user created - ${new Date().toLocaleTimeString()}`);
             return done(null,result);
         } catch (error) {
+            req.logger.error(`cannot register user - ${new Date().toLocaleTimeString()}`);
             return done("Error getting user: "+error);
         }
     }));
@@ -41,14 +43,17 @@ const initializePassport = () => {
             const user = await userModel.findOne({ email: email });
             if (!user) {
                 req.session.errorMessage = 'Usuario inexistente';
+                req.logger.error(`wrong user - ${new Date().toLocaleTimeString()}`);
                 return done(null, false);
             }
             if (!isValidPassword(user, password)) {
+                req.logger.error(`wrong password - ${new Date().toLocaleTimeString()}`);
                 req.session.errorMessage = 'Contraseña incorrecta';
                 return done(null, false);
             } else {
                 req.session.errorMessage = '';
                 delete user.password;
+                req.logger.info(`${user.email} logged in - ${new Date().toLocaleTimeString()}`);
                 return done(null, user);
             }
         } catch (error) {
@@ -82,8 +87,10 @@ const initializePassport = () => {
                         cart: cartID
                     }
                     user = await userModel.create(newUser);
+                    req.logger.info(`github user created - ${new Date().toLocaleTimeString()}`);
                     done(null,user);
                 } else {
+                    req.logger.error(`github login error - ${new Date().toLocaleTimeString()}`);
                     done(null,user);
                 }
                 

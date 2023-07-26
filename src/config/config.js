@@ -19,6 +19,7 @@ dotenv.config({ path: cl_options.mode == 'DEVEL' ? '../.env.development': '../.e
 // Simplemente exportamos un objeto config con las distintas variables tomadas del process.env
 
 const config = {
+    mode: cl_options.mode,
     port: process.env.port,
     ws_port: process.env.ws_port,
     mongoose_url: process.env.mongoose_url,
