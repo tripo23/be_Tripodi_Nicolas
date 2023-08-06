@@ -6,14 +6,15 @@ mongoose.pluralize(null);
 const collection = 'products';
 
 const schema = new mongoose.Schema({
-    title: String,
-    description: String,
-    price: Number,
-    status: Boolean,
-    thumbnail: String,
-    code: String,
-    stock: Number,
-    category: String
+    title: { type: String},
+    description: { type: String},
+    price: { type: Number},
+    status: { type: Boolean},
+    thumbnail: { type: String},
+    code: { type: String},
+    stock: { type: Number},
+    category: { type: String},
+    owner: {type: String, default: 'admin'},
 });
 
 schema.plugin(mongoosePaginate);

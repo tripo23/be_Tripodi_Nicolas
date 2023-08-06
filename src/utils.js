@@ -1,6 +1,9 @@
 import * as url from 'url';
 import bcrypt from 'bcrypt';
 import { Faker, en } from '@faker-js/faker';
+import { transport } from './config/nodemailer.config.js'
+import fs from 'fs';
+
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -58,7 +61,7 @@ const newFakeUser = () => {
     const productsQty = parseInt(faker.number.int(20));
     for (let i = 0; i < productsQty; i++) { products.push(generateProduct()); }
 
-    const role = parseInt(faker.number.int(1)) === 1 ? 'client': 'seller';
+    const role = parseInt(faker.number.int(1)) === 1 ? 'client' : 'seller';
 
     return {
         id: faker.database.mongodbObjectId(),
@@ -82,7 +85,7 @@ const newFakeProduct = () => {
         id: faker.database.mongodbObjectId(),
         title: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
-        price: faker.commerce.price({dec:0}),
+        price: faker.commerce.price({ dec: 0 }),
         status: true,
         image: faker.image.urlLoremFlickr(),
         code: faker.number.hex({ min: 0, max: 65535 }),
@@ -98,5 +101,65 @@ const errorsDict = {
     INTERNAL_ERROR: { code: 500, msg: 'Error interno de ejecución del servidor' }
 }
 
+const generateToken = (length) => {
+    const token = [...Array(length)]
+        .map(() => (Math.random() * 36 | 0).toString(36))
+        .join('');
+    return token;
+}
 
-export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, generateTicketCode, newFakeUser, newFakeProduct, errorsDict };
+const generateHashedToken = async (length) => {
+    try {        
+        const token = generateToken(length);
+        const saltRounds = 10; // You can adjust the number of salt rounds as per your needs
+        const hashedToken = await bcrypt.hash(token, saltRounds);
+        return hashedToken;
+    } catch (error) {
+        console.error('Error generating hashed token:', error);
+        throw error; // Rethrow the error to the caller  
+    }
+}
+
+// Function to calculate the expiration time (e.g., 30 minutes from now)
+const calculateExpiryTime = (minutes) => {
+    const currentTime = new Date();
+    const expiryTime = new Date(currentTime.getTime() + minutes * 60 * 1000); // 30 minutes in milliseconds
+    return expiryTime;
+}
+
+
+// Function to send the reset password email
+const sendResetPasswordEmail = async (userEmail, resetLink) => {
+    const result = await transport.sendMail({
+        from: 'tripodi.nicolas@gmail.com', 
+        to: userEmail,
+        subject: 'Restablecer contraseña',
+        html: `<html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Restablecer contraseña</title>
+        </head>
+        <body style="font-family: Arial, sans-serif;">
+        
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="text-align: center;">Restablecer contraseña</h2>
+                <p>Hola ${userEmail},</p>
+                <p>Recibimos una solicitud para cambiar tu contraseña. Si vos no generaste el pedido, por favor ignorá este correo.</p>
+                <p>Si querés cambiar tu contraseña, hacé click en el siguiente link:</p>
+                <p style="text-align: center;">
+                    <a href="${ resetLink }" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Cambiar contraseña</a>
+                </p>
+                <p>Si tenés dudas o requerís asistencia, por favor ponete en contacto con nuestro equipo de soporte.</p>
+                <p>¡Gracias!</p>
+            </div>
+        
+        </body>
+        </html>`
+
+    })
+}
+
+
+export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, generateTicketCode, newFakeUser, newFakeProduct, errorsDict, generateHashedToken, calculateExpiryTime, sendResetPasswordEmail };
