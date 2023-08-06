@@ -84,19 +84,19 @@
 
 <body>
   <nav class="navbar navbar-expand-sm navbar-light bg-light">
-  <a class="navbar-brand" href="#">
-    Products
-  </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a href="http://localhost:3030/carts/{{cart}}" class="nav-link">Mi Carrito 🛒</a>
-      </li>
-      <li class="nav-item">
+    <a class="navbar-brand" href="#">
+      Products
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a href="http://localhost:3030/carts/{{cart}}" class="nav-link">Mi Carrito 🛒</a>
+        </li>
+        <li class="nav-item">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
@@ -109,13 +109,13 @@
             </form>
           </div>
         </li>
-      </li>
-      <li class="nav-item">
+        </li>
+        <li class="nav-item">
 
-      </li>
-    </ul>
-  </div>
-</nav>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
 
   <div class="container">
@@ -130,13 +130,7 @@
             <p class="card-text">Price: {{price}}</p>
             <p class="card-text">Stock: {{stock}}</p>
             <button class="add-to-cart-button" onclick="addToCart('{{_id}}')">
-              <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="16px"
-                height="16px">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path
-                  d="M8 16h8v-2H8v2zm-6-6h6v-2H2v2zm0 4h6v-2H2v2zm12 0h6v-2h-6v2zm0-4h6v-2h-6v2zm-6-4V5H2v2h6zm10 14c.56 0 1-.45 1-1v-1h2v-2h-2v-2h-2v6h2zm4-12h-6v2h6v2h2V9c0-1.65-1.35-3-3-3H8c-1.65 0-3 1.35-3 3v8c0 1.65 1.35 3 3 3h12c1.65 0 3-1.35 3-3V9h-2V7h2V5h-6V3h-2v2H8v2h12v8z" />
-              </svg>
-              Add to Cart
+              🛒 Agregar
             </button>
           </div>
         </div>
@@ -152,9 +146,12 @@
 
   <script>
     function addToCart(productId) {
+
       const cartId = document.getElementById('cartId').value;
       const urlCart = `http://localhost:3030/carts/${cartId}`;
-      fetch(`/api/carts/${cartId}/product/${productId}`, {
+      const fetchURL = `http://localhost:3030/api/carts/${cartId}/product/${productId}`;
+
+      fetch(fetchURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -162,21 +159,39 @@
       })
         .then(response => response.json())
         .then(data => {
-          Toastify({
-            text: "Producto Agregado al Carrito",
-            duration: 3000,
-            destination: urlCart,
-            newWindow: false,
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-              background: "green",
-            },
-            onClick: function () { } // Callback after click
-          }).showToast();
-          console.log(data);
+
+          if (data.error) {
+            Toastify({
+              text: "No se agregó el producto",
+              duration: 3000,
+              destination: urlCart,
+              newWindow: false,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "right", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "red",
+              },
+              onClick: function () { } // Callback after click
+            }).showToast();
+
+          } else {
+            Toastify({
+              text: "Producto Agregado al Carrito",
+              duration: 3000,
+              destination: urlCart,
+              newWindow: false,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "right", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "green",
+              },
+              onClick: function () { } // Callback after click
+            }).showToast();
+          }
         })
         .catch(error => {
           console.error(error);

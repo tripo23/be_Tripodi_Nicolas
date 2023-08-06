@@ -46,7 +46,7 @@ function adminOrPremiumOnly(req, res, next) {
 }
 
 function userOnly(req, res, next) {
-    if (req.session?.role == 'user') {
+    if (req.session?.role == 'user'|| req.session?.role == 'premium') {
         console.log(req.session.role);
         return next();
     } else {
