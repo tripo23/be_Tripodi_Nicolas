@@ -1,107 +1,147 @@
-<div>
-    <div>
-        <h1>Esto es real time</h1>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
 
-    <div>
-        <h1>Add a product</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        <form action="realtimeproducts" method="POST" id="addProductForm" onsubmit="addLiveProduct">
-            Title: <input type="text" name="title">
-            Price: <input type="number" name="price">
-            Code: <input type="text" name="code">
-            Stock: <input type="number" name="stock">
-            Description: <input type="text" name="description">
-            Thumbnail: <input type="text" name="thumbnail">
-            Category: <input type="text" name="category">
-            <button>Add</button>
-        </form>
+</head>
 
-    </div>
-</div>
+<body>
+    <div class="container">
+        <div>
+            <h1>Página de administración de productos</h1>
+            <p>Owner: {{email}}</p>
+        </div>
 
-<div>
-    <h1>Delete a product</h1>
-    <h1></h1>
-    <form action="realtimeproducts?method=DELETE" method="POST">
-      ID: <input type="number" name="id">
-      <button>Delete</button>
-    </form>
-</div>
+        <div>
+            <h2>Agregar un producto</h2>
 
-    <div>
-           <table id="prodsLiveTable">
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Code</th>
-            <th>Stock</th>
-            <th>Description</th>
-            <th>Thumbnail</th>
-            <th>Category</th>
-        </tr>
-        <ul>
-            {{#each productos}}
-            <tr>
-                <td>{{this.id}}</td>
-                <td>{{this.title}}</td>
-                <td>{{this.price}}</td>
-                <td>{{this.code}}</td>
-                <td>{{this.stock}}</td>
-                <td>{{this.description}}</td>
-                <td><img src={{this.thumbnail}} alt={{this.thumbnail}}></td>
-                <td>{{this.category}}</td>
-            </tr>
-            {{/each}}
-
-        </ul>
-                <div id="productos">
+            <form action="realtimeproducts" method="POST" id="addProductForm" onsubmit="addProduct">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" class="form-control" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="code">Code:</label>
+                    <input type="text" class="form-control" name="code" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" class="form-control" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" class="form-control" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail">Thumbnail:</label>
+                    <input type="text" class="form-control" name="thumbnail" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" class="form-control" name="category" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
 
         </div>
     </div>
-</div>
 
+    <div class="container mt-4">
+        <h2>Borrar un producto</h2>
+        <form action="realtimeproducts?method=DELETE" method="POST">
+            <div class="form-group">
+                <label for="id">ID:</label>
+                <input type="text" class="form-control" name="id" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
 
+    <div class="container mt-4">
+        <h2>Lista de productos</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Code</th>
+                    <th>Stock</th>
+                    <th>Description</th>
+                    <th>Thumbnail</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each productos}}
+                <tr>
+                    <td>{{this._id}}</td>
+                    <td>{{this.title}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>{{this.description}}</td>
+                    <td><img src={{this.thumbnail}} alt={{this.thumbnail}} width="50"></td>
+                    <td>{{this.category}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
 
-
+    <div class="container mt-4">
+        <div id="productos"></div>
+    </div>
+</body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
 <script>
 
     const ws = io('http://localhost:8080', { forceNew: true });
 
     function addProduct(e) {
-    const product = {
-        title: document.getElementById("title").value,
-        price: document.getElementById("price").value,
-        code: document.getElementById("code").value,
-        stock: document.getElementById("stock").value,
-        description: document.getElementById("description").value,
-        thumbnails: document.getElementById("thumbnail").value,
-        category: document.getElementById("category").value
-    }
+        const product = {
+            title: document.getElementById("title").value,
+            price: document.getElementById("price").value,
+            code: document.getElementById("code").value,
+            stock: document.getElementById("stock").value,
+            description: document.getElementById("description").value,
+            thumbnails: document.getElementById("thumbnail").value,
+            category: document.getElementById("category").value
+        }
 
-    socket.emit("addProduct", product)
-    return false
-}
+        socket.emit("addProduct", product)
+        return false
+    }
 
     function render(dataProduct) {
         const html = dataProduct.map((item, index) => {
-            return(`<tr>
+            return (`<tr>
                 <td>${item.id}</td>
                 <td>${item.title}</td>
                 <td>${item.price}</td>
                 <td>${item.code}</td>
                 <td>${item.stock}</td>
                 <td>${item.description}</td>
-                <td>${item.thumbnail}</td>
+                <td><img src=${item.thumbnail} alt=${item.thumbnail} width="50"></td>
+                <td>${item.category}</td>
             </tr>`)
         }).join(" ")
 
         document.getElementById("productos").innerHTML = html;
     }
 
-    ws.on("addProduct", function(newProduct) {render(newProduct)})
-
+    ws.on("addProduct", function (newProduct) { render(newProduct) })
 
 </script>
+
+
+</html>

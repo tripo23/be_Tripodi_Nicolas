@@ -52,7 +52,8 @@ class ProductManager {
                     thumbnail: objProduct.thumbnail,
                     code: objProduct.code,
                     stock: objProduct.stock,
-                    category: objProduct.category
+                    category: objProduct.category,
+                    owner: objProduct.owner
                 };
 
                 const process = await productsModel.create(newProduct);

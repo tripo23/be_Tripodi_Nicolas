@@ -35,6 +35,15 @@ function adminOnly(req, res, next) {
         res.render('forbidden');
     }
 }
+function adminOrPremiumOnly(req, res, next) {
+    if (req.session?.role == 'admin' || req.session?.role == 'premium') {
+        console.log(req.session.role);
+        return next();
+    } else {
+        console.log(req.session.role);
+        res.render('forbidden');
+    }
+}
 
 function userOnly(req, res, next) {
     if (req.session?.role == 'user') {
@@ -162,4 +171,4 @@ const sendResetPasswordEmail = async (userEmail, resetLink) => {
 }
 
 
-export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, generateTicketCode, newFakeUser, newFakeProduct, errorsDict, generateHashedToken, calculateExpiryTime, sendResetPasswordEmail };
+export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, adminOrPremiumOnly, generateTicketCode, newFakeUser, newFakeProduct, errorsDict, generateHashedToken, calculateExpiryTime, sendResetPasswordEmail };
