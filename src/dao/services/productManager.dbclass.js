@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 import productsModel from '../models/products.model.js'
-
-//import fs from 'fs';
 import Joi from 'joi';
 
 class ProductManager {
@@ -16,7 +14,7 @@ class ProductManager {
             price: Joi.number().required(),
             code: Joi.string().required(),
             stock: Joi.number().required(),
-            status: Joi.boolean().required(),
+            status: Joi.boolean().optional().default(true),
             thumbnails: Joi.array().optional(),
             category: Joi.string().required()
         });

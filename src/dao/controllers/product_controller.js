@@ -31,7 +31,7 @@ export const getProducts = async (req, res) => {
 export const realTimeProducts = async (req, res) => {
     await producto.load();
     const prodRender = producto.products;
-    res.render('realtimeproducts', { productos: prodRender });
+    res.render('realtimeproducts', { productos: prodRender, email: req.session.user });
 };
 
 
@@ -83,12 +83,19 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     const currentProduct = await producto.getProductById(req.params.pid);
+
     if (currentProduct.owner === req.session.user) {
         await producto.deleteProduct(req.params.pid);
         req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({ message: 'Producto eliminado' });
     } else {
-        res.status(401).json({ error: 'Usuario no autorizado' });
+        if (req.session.role === "admin") {
+            await producto.deleteProduct(req.params.pid);
+            req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
+            res.status(200).json({ message: 'Producto eliminado' });
+        } else {
+            res.status(401).json({ error: 'Usuario no autorizado' });
+        }
     }
 }
 
@@ -104,6 +111,18 @@ export const addProduct = async (req, res) => {
         req.logger.info(`product added - ${new Date().toLocaleTimeString()}`);
         res.status(200).json({ message: 'Producto enviado' });
     }
+}
+
+export const addProductFromView = async (req, res) => {
+    const data = req.body;
+    console.log(data);
+    producto.addProduct(data);
+    req.logger.info(`product added - ${new Date().toLocaleTimeString()}`);
+    res.status(200).json({ message: 'Producto enviado' });
+}
+
+export const productManager = async (req, res) => {
+    res.render('productManager', { email: req.session.user }); 
 }
 
 export const fakeProduct = async (req, res) => {

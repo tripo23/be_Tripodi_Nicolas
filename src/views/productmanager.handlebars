@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <h1>Página de administración de productos</h1>
+            <p>Owner: {{email}}</p>
+        </div>
+
+        <div>
+            <h2>Agregar un producto</h2>
+
+            <form class="p-4 change-role-form" action="http://localhost:3030/api/newproduct" method="post">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" class="form-control" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="code">Code:</label>
+                    <input type="text" class="form-control" name="code" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" class="form-control" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" class="form-control" name="description" required>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail">Thumbnail:</label>
+                    <input type="text" class="form-control" name="thumbnail" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" class="form-control" name="category" required>
+                </div>
+                <input type="hidden" name="owner" id="owner" value="{{email}}">
+                <input type="hidden" name="status" id="status" value="true">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <h2>Borrar un producto</h2>
+        <form class="p-4 change-role-form" action="/api/products/{{PRODUCT_ID}}" method="post" id="deleteForm">
+            <input type="hidden" name="_method" value="delete">
+            <div class="form-group">
+                <label for="id">ID:</label>
+                <input type="text" class="form-control" name="id" id="productIdInput" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+
+    </div>
+
+
+</body>
+<script>
+    const deleteForm = document.getElementById('deleteForm');
+    const productIdInput = document.getElementById('productIdInput');
+
+    // Add an event listener to the input field
+    productIdInput.addEventListener('input', function() {
+        const productId = this.value.trim(); // Get the product ID from the input field
+
+        // Update the form action with the product ID
+        deleteForm.action = `/api/products/${productId}`;
+    });
+</script>
+
+</html>

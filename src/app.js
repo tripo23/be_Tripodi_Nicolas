@@ -3,6 +3,8 @@ import { Server } from 'socket.io';
 import express from "express";
 import session from 'express-session';
 import mongoStore from 'connect-mongo'
+import methodOverride from 'method-override';
+
 
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -36,6 +38,8 @@ let prods = [];
 
 // Servidor express base
 const server = express();
+server.use(methodOverride('_method'));
+
 const httpServer = server.listen(ws_port, () => {
     console.log(`Servidor Socket.io iniciado en puerto ${ws_port}`);
 });

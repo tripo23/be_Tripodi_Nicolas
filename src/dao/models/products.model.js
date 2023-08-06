@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
     title: { type: String},
     description: { type: String},
     price: { type: Number},
-    status: { type: Boolean},
+    status: { type: Boolean, default: true},
     thumbnail: { type: String},
     code: { type: String},
     stock: { type: Number},

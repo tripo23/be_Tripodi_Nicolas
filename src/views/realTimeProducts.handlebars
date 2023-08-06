@@ -15,6 +15,7 @@
         <div>
             <h1>Página de administración de productos</h1>
             <p>Owner: {{email}}</p>
+            <input type="hidden" id="ownerEmail" value='test@owner.com'>
         </div>
 
         <div>
@@ -79,6 +80,7 @@
                     <th>Description</th>
                     <th>Thumbnail</th>
                     <th>Category</th>
+                    <th>Owner</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,6 +94,7 @@
                     <td>{{this.description}}</td>
                     <td><img src={{this.thumbnail}} alt={{this.thumbnail}} width="50"></td>
                     <td>{{this.category}}</td>
+                    <td>{{this.owner}}</td>
                 </tr>
                 {{/each}}
             </tbody>
@@ -115,9 +118,9 @@
             stock: document.getElementById("stock").value,
             description: document.getElementById("description").value,
             thumbnails: document.getElementById("thumbnail").value,
-            category: document.getElementById("category").value
+            category: document.getElementById("category").value,
+            owner: document.getElementById("ownerEmail").value
         }
-
         socket.emit("addProduct", product)
         return false
     }
@@ -125,7 +128,7 @@
     function render(dataProduct) {
         const html = dataProduct.map((item, index) => {
             return (`<tr>
-                <td>${item.id}</td>
+                <td>${item._id}</td>
                 <td>${item.title}</td>
                 <td>${item.price}</td>
                 <td>${item.code}</td>
@@ -133,6 +136,7 @@
                 <td>${item.description}</td>
                 <td><img src=${item.thumbnail} alt=${item.thumbnail} width="50"></td>
                 <td>${item.category}</td>
+                <td>${item.owner}</td>
             </tr>`)
         }).join(" ")
 

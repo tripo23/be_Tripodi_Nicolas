@@ -117,4 +117,20 @@ router.post('/setNewPassword', async (req, res) => {
     }
 })
 
+router.get('/api/users/premium/:uid', async (req, res) => {
+    const uid = req.params.uid
+    const user = await userModel.findOne({ _id: uid });
+    res.render('selectRole', { user: user, id: uid });
+})
+
+router.post('/changeRole', async (req, res) => {
+    const uid = req.body.uid
+    const role = req.body.role
+    const user = await userModel.findOne({ _id: uid });
+    user.role = role
+    await user.save()
+    req.logger.info(`role modified - ${new Date().toLocaleTimeString()}`);
+    res.status(200).send('Rol modificado');
+})
+
 export default router;
