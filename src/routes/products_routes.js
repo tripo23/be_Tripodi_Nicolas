@@ -9,16 +9,18 @@ const router = Router();
 
 
 router.get('/products', addLogger, getProducts);
+router.post('/products', addProduct);
+router.get('/products/:pid/', productByPID);
+router.put('/products/:pid/', adminOrPremiumOnly, updateProduct);
+router.post('/products/:pid/', adminOrPremiumOnly, deleteProduct);
+
 router.get('/realtimeproducts', realTimeProducts);
 router.get('/productmanager', adminOrPremiumOnly, productManager);
 router.post('/newproduct', addProductFromView);
 router.get('/chat', userOnly, chat);
 router.get('/mockingproducts', fakeProduct);
 router.post('/realtimeproducts', realTimeProductsPost);
-router.get('/products/:pid/', productByPID);
-router.put('/products/:pid/', adminOrPremiumOnly, updateProduct);
-router.post('/products', addProduct);
-router.post('/products/:pid/', adminOrPremiumOnly, deleteProduct);
+
 
 
 

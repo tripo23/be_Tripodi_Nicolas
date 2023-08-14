@@ -5,7 +5,6 @@ import session from 'express-session';
 import mongoStore from 'connect-mongo'
 import methodOverride from 'method-override';
 
-
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import MongoSingleton from './dao/services/mongo_class.js';
@@ -15,6 +14,10 @@ import { __dirname, errorsDict } from './utils.js';
 import { addLogger } from './dao/services/logger.service.js';
 
 import exphbs from 'express-handlebars';
+
+// Importamos swaggerJsdoc y swaggerUiExpress
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 import routerProd from './routes/products_routes.js';
 import routerCart from './routes/carts_routes.js';
@@ -34,6 +37,19 @@ const secret_session = config.secret_session;
 
 
 let prods = [];
+
+// Generamos la configuración inicial para swaggerJsdoc
+const swaggerOptions = {
+  definition: {
+      openapi: '3.0.1',
+      info: {
+          title: 'Documentación sistema ecommerce',
+          description: 'Esta documentación cubre toda las APIs habilitadas para el sistema de ecommerce'
+      }
+  },
+  apis: ['./docs/**/*.yaml'] // todos los archivos de configuración de rutas estarán aquí
+}
+const specs = swaggerJsdoc(swaggerOptions);
 
 
 // Servidor express base
@@ -111,9 +127,9 @@ server.use('/', mainRoutes);
 server.use('/', userRoutes);
 server.use('/', sessionRoutes);
 server.use('/', viewRoutes)
+server.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 //Captura de errores en rutas
-
 server.all('*', (req, res) => {
   throw new CustomError(errorsDict.ROUTING_ERROR);
 })

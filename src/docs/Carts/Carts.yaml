@@ -1,0 +1,201 @@
+paths:
+  /api/carts:
+    post:
+      summary: Crea un nuevo carrito
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: 'Carrito creado exitosamente'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cartId:
+                    type: string
+                example:
+                  cartId: "64cff4ad4e33f122f4eca384"
+        "500":
+          description: 'ERROR'
+
+  /api/carts/{cid}:
+    get:
+      summary: Retorna un carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Carrito actualizado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts'
+        "404":
+          description: 'Carrito no encontrado'
+        "500":
+          description: 'ERROR'
+    put:
+      summary: Actualiza el carrito en base a un array
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartUpdate'
+      responses:
+        "200":
+          description: 'Carrito actualizado exitosamente'
+        "404":
+          description: 'Carrito no encontrado'
+        "500":
+          description: 'ERROR'
+    delete:
+      summary: Elimina todos los productos de un carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Productos eliminados exitosamente'
+        "404":
+          description: 'Carrito no encontrado'
+        "500":
+          description: 'ERROR'
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Realiza la compra del carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Carrito comprado exitosamente'
+        "404":
+          description: 'Carrito no encontrado'
+        "500":
+          description: 'ERROR'
+  /api/carts/{cid}/{pid}:
+    post:
+      summary: Agrega un producto al carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+        - in: path
+          name: pid
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+      responses:
+        "200":
+          description: 'Producto agregado exitosamente'
+        "404":
+          description: 'Producto no encontrado'
+        "500":
+          description: 'ERROR'
+    delete:
+      summary: Elimina un producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+        - in: path
+          name: pid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Producto eliminado exitosamente'
+        "404":
+          description: 'Producto no encontrado'
+        "500":
+          description: 'ERROR'
+
+components:
+  schemas:
+    CartItem:
+      type: object
+      properties:
+        product:
+          type: object
+          properties:
+            status:
+              type: boolean
+            owner:
+              type: string
+            _id:
+              type: string
+            id:
+              type: number
+            title:
+              type: string
+            description:
+              type: string
+            price:
+              type: number
+            thumbnail:
+              type: string
+            code:
+              type: string
+            stock:
+              type: number
+        quantity:
+          type: number
+        _id:
+          type: string
+
+    Carts:
+      type: object
+      properties:
+        _id:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        __v:
+          type: number
+
+  requestBodies:
+    cartUpdate:
+      type: object
+      properties:
+        id: 
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'

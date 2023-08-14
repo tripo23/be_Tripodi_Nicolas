@@ -1,0 +1,134 @@
+paths:
+  /api/products:
+    get:
+      summary: Retorna la lista completa de productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: 'Productos obtenidos exitosamente'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Products'
+        "500":
+          description: 'ERROR'
+    post:
+      summary: Crea un producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/addProduct'
+      responses:
+        "200":
+          description: 'Producto creado exitosamente'
+        "500":
+          description: 'ERROR'
+
+  /api/products/{pid}:
+    get:
+      summary: Retorna un producto
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Producto obtenido exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        "404":
+          description: 'Producto no encontrado'
+        "500":
+          description: 'ERROR'
+    delete:
+      summary: Elimina un producto
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Producto eliminado exitosamente'
+        "404":
+          description: 'Producto no encontrado'
+        "500":
+          description: 'ERROR'
+    put:
+      summary: Actualiza un producto
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 'Producto actualizado exitosamente'
+        "404":
+          description: 'Producto no encontrado'
+        "500":
+          description: 'ERROR'
+
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        status:
+          type: boolean
+        owner:
+          type: string
+        _id:
+          type: string
+          description: Mongoose object ID
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        thumbnail:
+          type: string
+        code:
+          type: string
+        stock:
+          type: number
+        category:
+          type: string
+
+  requestBodies:
+    addProduct:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: boolean
+        price:
+          type: number
+        stock:
+          type: number
+        thumbnails:
+          type: object
+        category:
+          type: string
