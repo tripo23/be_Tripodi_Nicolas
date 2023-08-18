@@ -11,7 +11,8 @@ router.get('/carts/:cid', carts);
 router.put('/carts/:cid', addArrayToCart);
 router.delete('/carts/:cid', deleteAllProducts);
 router.get('/carts/:cid/purchase', purchase)
-router.post('/carts/:cid/product/:pid', userOnly, AddProductToCart);
+//router.post('/carts/:cid/product/:pid', userOnly, AddProductToCart);
+router.post('/carts/:cid/product/:pid', AddProductToCart);
 router.put('/carts/:cid/product/:pid', updateCart);
 router.delete('/carts/:cid/product/:pid', deleteProductFromCart);
 

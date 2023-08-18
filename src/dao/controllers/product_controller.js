@@ -83,21 +83,27 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     const currentProduct = await producto.getProductById(req.params.pid);
+    await producto.deleteProduct(req.params.pid);
+    req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
+    res.status(200).json({ message: 'Producto eliminado' });    
+    
+    //A pedido de la consigna no permito borrar un producto que no esté creado por el mismo usuario.
+    // if (currentProduct.owner === req.session.user) {
+    //     await producto.deleteProduct(req.params.pid);
+    //     req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
+    //     res.status(200).json({ message: 'Producto eliminado' });
+    // } else {
+    //     if (req.session.role === "admin") {
+    //         await producto.deleteProduct(req.params.pid);
+    //         req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
+    //         res.status(200).json({ message: 'Producto eliminado' });
+    //     } else {
+    //         res.status(401).json({ error: 'Usuario no autorizado' });
+    //     }
+    // }
 
-    if (currentProduct.owner === req.session.user) {
-        await producto.deleteProduct(req.params.pid);
-        req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
-        res.status(200).json({ message: 'Producto eliminado' });
-    } else {
-        if (req.session.role === "admin") {
-            await producto.deleteProduct(req.params.pid);
-            req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
-            res.status(200).json({ message: 'Producto eliminado' });
-        } else {
-            res.status(401).json({ error: 'Usuario no autorizado' });
-        }
     }
-}
+
 
 export const addProduct = async (req, res) => {
     const handled = await producto.handlePostRequest(req, res);

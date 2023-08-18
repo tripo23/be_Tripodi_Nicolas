@@ -133,12 +133,12 @@ export const AddProductToCart = async (req, res) => {
 
     // veo si este producto le pertenece al usuario premium
     const currentProduct = await producto.getProductById(pid);
-    console.log('owner', currentProduct.owner);
-    console.log('user', req.session.user);
-    if (currentProduct.owner === req.session.user) {
-        console.log('unauthorized');
-        res.status(401).json({ error: 'Usuario no autorizado' });
-    } else {
+    // console.log('owner', currentProduct.owner);
+    // console.log('user', req.session.user);
+    // if (currentProduct.owner === req.session.user) {
+    //     console.log('unauthorized');
+    //     res.status(401).json({ error: 'Usuario no autorizado' });
+    // } else {
         const cartUpdate = await cart.addProductToCart(data);
 
         if (cartUpdate == 'err') {
@@ -148,9 +148,7 @@ export const AddProductToCart = async (req, res) => {
             req.logger.info(`product added to cart - ${new Date().toLocaleTimeString()}`);
             res.status(200).json({ message: 'Carrito actualizado' });
         }
-    }
-
-
+    // }
 
 };
 
