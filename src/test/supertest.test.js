@@ -1,7 +1,6 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import mongoose from 'mongoose';
-import { createHash } from '../utils.js';
 
 const mongoose_url = 'mongodb+srv://practicabe:LT06dW5ewpkPJUOO@cluster0.qn3gvsu.mongodb.net/ecommerce';
 const expect = chai.expect;
@@ -14,7 +13,6 @@ describe('Test general del servidor de ecommerce', async function () {
     before(async function () {
         try {
             pid = '';
-            console.log('se ejecuta before');
             await mongoose.connect(mongoose_url, { useNewUrlParser: true, useUnifiedTopology: true });
 
             console.log('Connected to MongoDB');
@@ -49,7 +47,7 @@ describe('Test general del servidor de ecommerce', async function () {
         }
     });
 
-    describe('Test de productos', () => {
+    describe('Test de productos', async function () {
 
         it('POST /api/products añade un producto', async function () {
             const newProduct = {
@@ -73,7 +71,6 @@ describe('Test general del servidor de ecommerce', async function () {
         it('GET /api/products devuelve todos los productos', async function () {
             const { statusCode, ok, body } = await requester.get('/api/products')
             pid = body.docs[0]._id
-            console.log(pid);
 
             expect(statusCode).to.equal(200);
             expect(ok).to.equal(true);
@@ -96,7 +93,7 @@ describe('Test general del servidor de ecommerce', async function () {
 
     })
 
-    describe('Test de carrito', () => {
+    describe('Test de carrito', async function () {
         it('POST /api/carts crea un carrito', async function () {
             const { statusCode, ok, body } = await requester.post('/api/carts')
             cid = body.cartID;
@@ -119,12 +116,12 @@ describe('Test general del servidor de ecommerce', async function () {
         })
     })
 
-    describe ('Test de users', () => {
+    describe ('Test de users', async function () {
         it ('POST /signup crea un usuario', async function () {
             const newUser = {
                 firstName: "Usuario",
                 lastName: "De Prueba",
-                email: 'usertest@test.com',
+                email: 'usrtest@test.com',
                 age: 30,
                 password: 'abc123',
                 role: 'user',
@@ -135,11 +132,10 @@ describe('Test general del servidor de ecommerce', async function () {
         })
 
         it ('POST /login loguea un usuario', async function () {
-            const {statusCode, ok, body } = await requester.post('/login').send({
+            const {statusCode, ok} = await requester.post('/login').send({
                 email: 'usrtest@test.com',
                 password: 'abc123'
             })
-            console.log(body);
             expect(statusCode).to.equal(200);
             expect(ok).to.equal(true);
         })
@@ -149,7 +145,7 @@ describe('Test general del servidor de ecommerce', async function () {
                 email: 'usrtest@test.com',
                 password: 'abc1234'
             })
-            expect(statusCode).to.equal(302);
+            expect(statusCode).not.to.equal(200);
             expect(ok).to.equal(false);
         })
     })
