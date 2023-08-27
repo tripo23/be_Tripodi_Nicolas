@@ -9,6 +9,24 @@ const router = Router();
 
 const baseURL = 'http://localhost:3030/'
 
+router.get('/signup', (req, res) => {
+    res.render('signup');
+});
+
+router.get('/failregister', async (req, res) => {
+    let errorMessage = 'Este email ya se encuentra registrado'
+    res.render('signup', { signupInfo: errorMessage });
+});
+
+router.get('/resetPassword', (req, res) => {
+    res.render('resetPassword');
+});
+
+router.get('/faillogin', (req, res) => {
+    req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
+    res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } });
+})
+
 router.get('/products', auth, async (req, res) => {
     await producto.load();
     const prodRender = producto.products;

@@ -1,11 +1,16 @@
 import { Router } from "express";
 import passport from 'passport';
+import userModel from "../dao/models/users.model.js";
 
 
 const router = Router();
 
 const baseURL = 'http://localhost:3030/'
 
+router.post('/signup', passport.authenticate('register', { failureRedirect: 'failregister' }), async (req, res) => {
+    const email = req.user.email
+    res.status(200).render('signupConfirmed', { email: email })
+});
 
 router.get('/login', (req, res) => {
     if (req.session.errorMessage !== '') {
@@ -27,29 +32,27 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'login' 
         req.session.user = req.user.email;
         req.session.role = req.user.role;
         req.session.cart = req.user.cart
+        //Agrego el timestamp
+        const user = await userModel.findOne({ email: req.session.user });
+        user.last_connection = new Date();
+        try {
+            await user.save(); // Save the changes to the document
+            console.log('User last connection updated successfully.');
+        } catch (error) {
+            console.error('Error updating user last connection:', error);
+        }
         if (req.user.email === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
             req.session.role = 'admin';
         }
         if (req.session.role == 'admin') {
-            res.redirect(baseURL+'api/productmanager');
+            res.redirect(baseURL + 'api/productmanager');
         } else {
-        res.redirect(baseURL + 'products');
+            res.redirect(baseURL + 'products');
+        }
     }
-}
 });
 
-router.get('/faillogin', (req, res) => {
-    req.session.errorMessage = 'Tu usuario o contraseña son incorrectos.';
-    res.render('login', { sessionInfo: { errorMessage: req.session.errorMessage } });
-})
 
-
-router.post('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (!err) res.redirect(baseURL);
-        else res.send({ status: 'Error al hacer logout', body: err })
-    });
-});
 
 router.get('/sessions/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => {
 });
@@ -64,8 +67,5 @@ router.get('/api/sessions/githubcallback', passport.authenticate('github', { fai
     res.redirect(baseURL + 'products');
 });
 
-router.get('/api/sessions/current', (req, res) => {
-    res.send(req.session.user);
-})
 
 export default router;

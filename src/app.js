@@ -32,7 +32,6 @@ import messageModel from './dao/models/messages.model.js';
 const port = parseInt(config.port) || 3030;
 const ws_port = parseInt(config.ws_port) || 8080;
 const mongoose_url = config.mongoose_url;
-//const mongoose_url = 'mongodb://127.0.0.1:27017/coder51220'
 const secret_session = config.secret_session;
 
 

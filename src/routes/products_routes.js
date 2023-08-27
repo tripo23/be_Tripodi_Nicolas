@@ -11,10 +11,8 @@ const router = Router();
 router.get('/products', addLogger, getProducts);
 router.post('/products', addProduct);
 router.get('/products/:pid/', productByPID);
-//router.put('/products/:pid/', adminOrPremiumOnly, updateProduct);
-router.put('/products/:pid/', updateProduct);
-//router.delete('/products/:pid/', adminOrPremiumOnly, deleteProduct);
-router.delete('/products/:pid/', deleteProduct);
+router.put('/products/:pid/', adminOrPremiumOnly, updateProduct);
+router.delete('/products/:pid/', adminOrPremiumOnly, deleteProduct);
 
 router.get('/realtimeproducts', realTimeProducts);
 router.get('/productmanager', adminOrPremiumOnly, productManager);

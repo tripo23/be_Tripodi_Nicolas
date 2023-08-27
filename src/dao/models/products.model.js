@@ -3,8 +3,8 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 mongoose.pluralize(null); 
 
-//const collection = 'products';
-const collection = 'products_test';
+const collection = 'products';
+//const collection = 'products_test';
 
 const schema = new mongoose.Schema({
     title: { type: String},

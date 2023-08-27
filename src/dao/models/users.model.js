@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const collection = 'users_test';
+const collection = 'users';
+//const collection = 'users_test';
 
 const schema = new mongoose.Schema({
     firstName: { type: String, required: true },
@@ -14,8 +15,16 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'carts',
     },
+    documents: {
+        name: {type: String},
+        reference: {type: String},
+    },
+    last_connection: {type: Date},
     resetToken: {type: String},
     resetTokenExpiration: {type: Date},
+    doc_id: {type: String},
+    doc_address: {type: String},
+    doc_account: {type: String},
 });
 
 const userModel = mongoose.model(collection, schema);

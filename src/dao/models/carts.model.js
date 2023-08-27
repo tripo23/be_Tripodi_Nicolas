@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 mongoose.pluralize(null); 
 
-//const collection = "carts";
-const collection = "carts_test";
+const collection = "carts";
+//const collection = "carts_test";
 
 const schema = new mongoose.Schema({
   products: [
