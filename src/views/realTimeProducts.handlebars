@@ -108,7 +108,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"></script>
 <script>
 
-    const ws = io('http://localhost:8080', { forceNew: true });
+    const ws = io('{{http://localhost:8080}}', { forceNew: true });
 
     function addProduct(e) {
         const product = {

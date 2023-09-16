@@ -15,7 +15,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-6 mt-4">
 
-                <form class="p-4 change-role-form" action="http://localhost:3030/changeRole" method="post">
+                <form class="p-4 change-role-form" action="{{dynamicURL '/changeRole'}}" method="post">
                     <input type="hidden" name="uid" value="{{ id }}">
                     <h2 class="text-center mb-4">Cambiar rol de usuario</h2>
 

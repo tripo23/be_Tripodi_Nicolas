@@ -20,7 +20,7 @@
         <div>
             <h2>Agregar un producto</h2>
 
-            <form class="p-4 change-role-form" action="http://localhost:3030/api/newproduct" method="post">
+            <form class="p-4 change-role-form" action="{{dynamicURL '/api/newproduct'}}" method="post">
                 <div class="form-group">
                     <label for="title">Title:</label>
                     <input type="text" class="form-control" name="title" required>
