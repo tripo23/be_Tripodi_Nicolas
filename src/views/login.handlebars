@@ -68,7 +68,7 @@
     <div class="row justify-content-sm-center">
         <div class="col-lg-4 col-md-6 col-sm-8 mt-4">
 
-            <form class="p-4 login-form" action="http://localhost:3030/login" method="post">
+            <form class="p-4 login-form" action="{{dynamicURL '/login'}}" method="post">
                 <label for="">Iniciar sesión</label>
                 <div class="form-group mb-4">
                     <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
@@ -101,8 +101,8 @@
 
 
             <div class="registration">
-                <small> <a href="http://localhost:3030/resetPassword">¿Olvidaste tu contraseña?</a></small> <br>
-                <small> <a href="http://localhost:3030/signup">¿Todavía no estás registrado?</a></small>
+                <small> <a href={{dynamicURL '/resetPassword'}}>¿Olvidaste tu contraseña?</a></small> <br>
+                <small> <a href={{dynamicURL '/signup'}}>¿Todavía no estás registrado?</a></small>
             </div>
 
 
