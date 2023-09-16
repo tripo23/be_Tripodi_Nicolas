@@ -80,7 +80,7 @@ try {
     console.log(`Servidor base API / static iniciado en puerto ${port}`);
   });  
 } catch (error) {
-    console.log('No se puede conectar con el servidor de bbdd');
+    console.log('No se puede conectar con el servidor de bbdd.');
 }
 
 
@@ -90,9 +90,9 @@ const hbs = exphbs.create({
     capitalize: function (str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    dynamicURL: function (path) {
+    dynamicURL: function () {
       const serverURL = config.serverURL;// Use environment variable or a default value
-      return `${serverURL}${path}`;
+      return `${serverURL}`;
     },
   },
   runtimeOptions: {

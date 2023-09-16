@@ -20,7 +20,6 @@ router.get('/login', (req, res) => {
     } else {
         res.render('login');
     }
-
 })
 
 router.post('/login', passport.authenticate('login', { failureRedirect: 'login' }), async (req, res) => {
