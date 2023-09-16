@@ -14,7 +14,7 @@ class TicketManager {
 
         const newTicket = {
             code: generateTicketCode(),
-            purchase_datetime: new Date().toLocaleString(),
+            purchase_datetime: new Date().toISOString(),
             amount: data.amount,
             purchaser: 'test',
             products:[]
