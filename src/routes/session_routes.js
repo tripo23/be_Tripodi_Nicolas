@@ -6,7 +6,8 @@ import config from "../config/config.js";
 
 const router = Router();
 
-const baseURL = `${config.serverURL}:${config.port}`;
+const baseURL = config.serverURL;
+//const baseURL = `${config.serverURL}:${config.port}`;
 
 router.post('/signup', passport.authenticate('register', { failureRedirect: 'failregister' }), async (req, res) => {
     const email = req.user.email
