@@ -7,34 +7,52 @@
 </head>
 
 <body>
-  <h1>Cart</h1>
-  <h3>{{this.cartID}}</h3>
-  <table style="text-align: center;">
-    <thead>
-      <tr>
-        <th>Product ID</th>
-        <th>Product Name</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each products}}
-      <tr>
-        <td>{{this.product._id}}</td>
-        <td>{{this.product.title}}</td>
-        <td>{{this.quantity}}</td>
-        <td>{{this.product.price}}</td>
-        <td>{{this.subtotal}}</td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  <h2>Total: {{this.total}}</h2>
-  <input type="hidden" id="cartId" value="{{this.cartID}}">
-  <!-- Add the Bootstrap-styled "Checkout" button -->
-  <button class="btn btn-primary" type="button" onclick="checkout()">Checkout</button>
+  <nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <a class="navbar-brand" href="http://localhost:3030/products">
+      Products
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h1 class="mb-4">Productos en el carrito 🛒</h1>
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Producto</th>
+          <th class="text-center" style="width: 10%;">Cantidad</th>
+          <th class="text-center" style="width: 15%;">Precio</th>
+          <th class="text-center" style="width: 15%;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <td>{{this.product.title}}</td>
+          <td class="text-center">{{this.quantity}}</td>
+          <td class="text-center">{{this.product.price}}</td>
+          <td class="text-center">{{this.subtotal}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-right"><strong>Total:</strong></td>
+          <td class="text-center"><strong>{{this.total}}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+    <input type="hidden" id="cartId" value="{{this.cartID}}">
+    <button class="btn btn-primary" type="button" onclick="checkout()">Checkout</button>
+  </div>
+
 
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -46,7 +46,7 @@ function adminOrPremiumOnly(req, res, next) {
 }
 
 function userOnly(req, res, next) {
-    if (req.session?.role == 'user'|| req.session?.role == 'premium') {
+    if (req.session?.role == 'user' || req.session?.role == 'premium') {
         console.log(req.session.role);
         return next();
     } else {
@@ -118,7 +118,7 @@ const generateToken = (length) => {
 }
 
 const generateHashedToken = async (length) => {
-    try {        
+    try {
         const token = generateToken(length);
         const saltRounds = 10; // You can adjust the number of salt rounds as per your needs
         const hashedToken = await bcrypt.hash(token, saltRounds);
@@ -140,7 +140,7 @@ const calculateExpiryTime = (minutes) => {
 // Function to send the reset password email
 const sendResetPasswordEmail = async (userEmail, resetLink) => {
     const result = await transport.sendMail({
-        from: 'tripodi.nicolas@gmail.com', 
+        from: 'tripodi.nicolas@gmail.com',
         to: userEmail,
         subject: 'Restablecer contraseña',
         html: `<html>
@@ -158,7 +158,7 @@ const sendResetPasswordEmail = async (userEmail, resetLink) => {
                 <p>Recibimos una solicitud para cambiar tu contraseña. Si vos no generaste el pedido, por favor ignorá este correo.</p>
                 <p>Si querés cambiar tu contraseña, hacé click en el siguiente link:</p>
                 <p style="text-align: center;">
-                    <a href="${ resetLink }" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Cambiar contraseña</a>
+                    <a href="${resetLink}" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Cambiar contraseña</a>
                 </p>
                 <p>Si tenés dudas o requerís asistencia, por favor ponete en contacto con nuestro equipo de soporte.</p>
                 <p>¡Gracias!</p>
@@ -170,5 +170,57 @@ const sendResetPasswordEmail = async (userEmail, resetLink) => {
     })
 }
 
+const sendDeletionAlertEmail = async (userEmail) => {
+    const result = await transport.sendMail({
+        from: 'tripodi.nicolas@gmail.com',
+        to: userEmail,
+        subject: 'Eliminación de cuenta',
+        html: `<html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Tu cuenta ha sido eliminada por falta de uso</title>
+        </head>
+        <body style="font-family: Arial, sans-serif;">
+        
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="text-align: center;">Eliminación de cuenta</h2>
+                <p>Hola ${userEmail},</p>
+                <p>Debido a un período de actividad mayor a 48hs, procedimos a eliminar tu cuenta. Para continuar usando la plataforma deberás registrarte nuevamente.</p>
+                <p>Si tenés dudas o requerís asistencia, por favor ponete en contacto con nuestro equipo de soporte.</p>
+                <p>¡Gracias!</p>
+            </div>
+            </body>
+            </html>`
+    })
+}
 
-export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, adminOrPremiumOnly, generateTicketCode, newFakeUser, newFakeProduct, errorsDict, generateHashedToken, calculateExpiryTime, sendResetPasswordEmail };
+const sendProductDeletionAlertEmail = async (userEmail, product) => {
+    const result = await transport.sendMail({
+        from: 'tripodi.nicolas@gmail.com',
+        to: userEmail,
+        subject: 'Eliminación de producto',
+        html: `<html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Tu producto ha sido eliminado</title>
+        </head>
+        <body style="font-family: Arial, sans-serif;">
+        
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="text-align: center;">Eliminación de producto</h2>
+                <p>Hola ${userEmail},</p>
+                <p>Tu producto ${product.title} (código: ${product.code}) ha sido eliminado de la plataforma.</p>
+                <p>Si tenés dudas o requerís asistencia, por favor ponete en contacto con nuestro equipo de soporte.</p>
+                <p>¡Gracias!</p>
+                </div>
+                </body>
+                </html>`
+        })
+}
+
+
+export { __filename, __dirname, createHash, isValidPassword, auth, adminOnly, userOnly, adminOrPremiumOnly, generateTicketCode, newFakeUser, newFakeProduct, errorsDict, generateHashedToken, calculateExpiryTime, sendResetPasswordEmail, sendDeletionAlertEmail, sendProductDeletionAlertEmail };

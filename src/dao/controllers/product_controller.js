@@ -1,14 +1,11 @@
-
-//import {factoryProduct} from '../services/factory.js';
 import { ProductManager } from '../services/productManager.dbclass.js';
 import { newFakeProduct } from '../../utils.js';
-const producto = new ProductManager();
-//const producto = new factoryProduct();
+import { userInfo } from './user_controller.js';
+import { sendProductDeletionAlertEmail } from '../../utils.js';
 
+const producto = new ProductManager();
 
 export const getProducts = async (req, res) => {
-    // /?limit=2&page=1&sort=-1&field=category&value=electronics
-    // /?sort=-1&field=stock&value=10 MIRA SI el stock es >10
     const options = {
         limit: req.query.limit ? req.query.limit : 10,
         sort: req.query.sort ? { precio: req.query.sort } : {},
@@ -83,26 +80,33 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     const currentProduct = await producto.getProductById(req.params.pid);
-    await producto.deleteProduct(req.params.pid);
-    req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
-    res.status(200).json({ message: 'Producto eliminado' });    
+    const productOwnerEmail = currentProduct.owner;
+    const owner = await userInfo(productOwnerEmail);
+
     
     //A pedido de la consigna no permito borrar un producto que no esté creado por el mismo usuario.
-    // if (currentProduct.owner === req.session.user) {
-    //     await producto.deleteProduct(req.params.pid);
-    //     req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
-    //     res.status(200).json({ message: 'Producto eliminado' });
-    // } else {
-    //     if (req.session.role === "admin") {
-    //         await producto.deleteProduct(req.params.pid);
-    //         req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
-    //         res.status(200).json({ message: 'Producto eliminado' });
-    //     } else {
-    //         res.status(401).json({ error: 'Usuario no autorizado' });
-    //     }
-    // }
+    if (owner.email === req.session.user) {
+        if (owner.role === 'premium') {
+            sendProductDeletionAlertEmail(owner.email, currentProduct);
+        }
+        await producto.deleteProduct(req.params.pid);
+        req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
+        res.status(200).json({ message: 'Producto eliminado' });
 
+    } else {
+        if (req.session.role === "admin") {
+            if (owner.role === 'premium') {
+                sendProductDeletionAlertEmail(owner.email, currentProduct);
+            }
+
+            await producto.deleteProduct(req.params.pid);
+            req.logger.info(`products deleted - ${new Date().toLocaleTimeString()}`);
+            res.status(200).json({ message: 'Producto eliminado' });
+        } else {
+            res.status(401).json({ error: 'Usuario no autorizado' });
+        }
     }
+}
 
 
 export const addProduct = async (req, res) => {
@@ -128,7 +132,7 @@ export const addProductFromView = async (req, res) => {
 }
 
 export const productManager = async (req, res) => {
-    res.render('productManager', { email: req.session.user }); 
+    res.render('productManager', { email: req.session.user });
 }
 
 export const fakeProduct = async (req, res) => {

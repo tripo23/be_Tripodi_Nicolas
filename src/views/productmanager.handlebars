@@ -59,30 +59,38 @@
 
     <div class="container mt-4">
         <h2>Borrar un producto</h2>
-        <form class="p-4 change-role-form" action="/api/products/{{PRODUCT_ID}}" method="post" id="deleteForm">
-            <input type="hidden" name="_method" value="delete">
+        <form class="p-4 change-role-form" id="deleteForm">
+            <input type="hidden" name="_method" value="DELETE">
             <div class="form-group">
                 <label for="id">ID:</label>
                 <input type="text" class="form-control" name="id" id="productIdInput" required>
             </div>
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-danger" onclick="deleteProduct()">Delete</button>
         </form>
-
     </div>
 
 
+
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    const deleteForm = document.getElementById('deleteForm');
-    const productIdInput = document.getElementById('productIdInput');
-
-    // Add an event listener to the input field
-    productIdInput.addEventListener('input', function() {
-        const productId = this.value.trim(); // Get the product ID from the input field
-
-        // Update the form action with the product ID
-        deleteForm.action = `/api/products/${productId}`;
-    });
+    function deleteProduct() {
+        const productId = document.getElementById("productIdInput").value;
+        
+        $.ajax({
+            url: `/api/products/${productId}`,
+            type: "DELETE",
+            success: function (data) {
+                // Handle success response here
+                console.log("Product deleted successfully");
+            },
+            error: function (xhr, status, error) {
+                // Handle error here
+                console.error("Error deleting product:", error);
+            }
+        });
+    }
 </script>
+
 
 </html>

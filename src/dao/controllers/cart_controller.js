@@ -111,7 +111,9 @@ export const purchase = async (req, res) => {
         await sendTicketByMail(req, res, ticketComplete);
         req.logger.info(`ticket sent by mail - ${new Date().toLocaleTimeString()}`);
 
-        res.status(200).send(ticketComplete)
+        //res.status(200).send(ticketComplete)
+
+        res.render('purchaseConfirmed', { ticketComplete, itemsWithoutStock });
     }
 }
 

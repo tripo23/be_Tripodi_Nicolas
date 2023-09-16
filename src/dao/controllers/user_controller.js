@@ -1,4 +1,4 @@
-import { generateHashedToken, calculateExpiryTime, sendResetPasswordEmail, createHash, isValidPassword } from '../../utils.js';
+import { generateHashedToken, calculateExpiryTime, sendResetPasswordEmail, createHash, isValidPassword, sendDeletionAlertEmail } from '../../utils.js';
 import userModel from "../models/users.model.js";
 
 const baseURL = 'http://localhost:3030/'
@@ -36,6 +36,33 @@ export const resetPassword = async (req, res) => {
     }
 }
 
+export const getUsers = async (req, res) => {
+    try {
+        const users = await userModel.find().select('firstName lastName email role');
+        res.status(200).send(users);
+    } catch (error) {
+        req.logger.error(`cannot get users - ${new Date().toLocaleTimeString()}`);
+        res.status(500).send('Error occurred');
+
+    }
+
+}
+
+export const deleteInactives = async (req, res) => {
+    const users = await userModel.find();
+    for (const user of users) {
+        const now = new Date();
+        const lastConnection = new Date(user.last_connection);
+        const resta = (now - lastConnection) / (1000 * 60 * 60);
+
+        if (resta > 48 || isNaN(resta)) {
+            console.log(user.email, resta, 'usuario inactivo');
+            await userModel.deleteOne({ _id: user._id });
+            sendDeletionAlertEmail(user.email);
+        }
+    }
+    res.status(200).send('Usuarios eliminados');
+}
 
 export const setPassword = async (req, res) => {
     const email = req.params.email;
@@ -134,6 +161,11 @@ export const current = async (req, res) => {
     res.send(req.session.user);
 }
 
+export const userInfo = async (email) => {
+    const user = await userModel.findOne({ email: email });
+    return user;
+}
+
 export const uploadFile = async (req, res) => {
 
     const user = await userModel.findOne({ email: req.session.email });
@@ -172,9 +204,6 @@ export const uploadFile = async (req, res) => {
 
         await user.save();
     }
-
-
-
     res.status(200).send('File processing completed');
 }
 
