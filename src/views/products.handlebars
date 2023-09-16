@@ -128,6 +128,7 @@
             <p class="card-text">{{description}}</p>
             <p class="card-text">Price: {{price}}</p>
             <p class="card-text">Stock: {{stock}}</p>
+            <p class="card-text">ID: {{_id}}</p>
             <button class="add-to-cart-button" onclick="addToCart('{{_id}}')">
               🛒 Agregar
             </button>
@@ -140,15 +141,16 @@
 
   <!-- Hidden input field to store the cart value -->
   <input type="hidden" id="cartId" value="{{cart}}">
+
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <script>
     function addToCart(productId) {
 
-      const cartId = document.getElementById('cartId').value;
       const urlCart = `{{dynamicURL '/api/carts/'}}{{cart}}`;
-      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cart}}/product/{$productId}`;
+      const pid = productId
+      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cart}}/product/`+pid;
 
       fetch(fetchURL, {
         method: 'POST',
