@@ -147,8 +147,8 @@
     function addToCart(productId) {
 
       const cartId = document.getElementById('cartId').value;
-      const urlCart = `{{dynamicURL '/api/carts/'}}{{cartId}}`;
-      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cartId}}'/product/'{{productId}}`;
+      const urlCart = `{{dynamicURL '/api/carts/'}}{{cart}}`;
+      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cart}}'/product/'{{productId}}`;
 
       fetch(fetchURL, {
         method: 'POST',
