@@ -91,7 +91,7 @@ const hbs = exphbs.create({
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
     dynamicURL: function (path) {
-      const serverURL = process.env.SERVER_URL || 'http://localhost:3030'; // Use environment variable or a default value
+      const serverURL = config.serverURL || 'http://localhost:3030'; // Use environment variable or a default value
       return `${serverURL}${path}`;
     },
   },

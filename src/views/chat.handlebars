@@ -113,7 +113,7 @@
 
 <script>
 
-  const ws = io('http://localhost:8080', { forceNew: true });
+  const ws = io(`${config.serverURL}:${config.ws_port}`, { forceNew: true });
 
   let username = "";
   const sendbtn = document.getElementById('send-btn');
