@@ -141,6 +141,7 @@
 
   <!-- Hidden input field to store the cart value -->
   <input type="hidden" id="cartId" value="{{cart}}">
+  <input type="hidden" id="dynamicURL" value="{{dynamicURL}}">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
@@ -148,7 +149,7 @@
     function addToCart(productId) {
 
       const cartId = document.getElementById('cartId').value;
-      const dynamicURL = "{{dynamicURL}}";
+      const dynamicURL = document.getElementById('dynamicURL').value;
       const urlCart = `${dynamicURL}/api/carts/${cartId}`;
       const fetchURL = `${dynamicURL}/api/carts/${cartId}/product/${productId}`;
 
