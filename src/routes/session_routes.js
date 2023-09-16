@@ -1,11 +1,12 @@
 import { Router } from "express";
 import passport from 'passport';
 import userModel from "../dao/models/users.model.js";
+import config from "../config/config.js";
 
 
 const router = Router();
 
-const baseURL = 'http://localhost:3030/'
+const baseURL = `${config.serverURL}:${config.port}`;
 
 router.post('/signup', passport.authenticate('register', { failureRedirect: 'failregister' }), async (req, res) => {
     const email = req.user.email

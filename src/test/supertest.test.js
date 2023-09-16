@@ -1,10 +1,11 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import mongoose from 'mongoose';
+import config from '../config/config';
 
 const mongoose_url = 'mongodb+srv://practicabe:LT06dW5ewpkPJUOO@cluster0.qn3gvsu.mongodb.net/ecommerce';
 const expect = chai.expect;
-const requester = supertest('http://localhost:3030');
+const requester = supertest(`${config.serverURL}:${config.port}`);
 let pid = '';
 let cid = '';
 

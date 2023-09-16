@@ -2,12 +2,13 @@ import { Router } from "express";
 import {CartManager} from '../dao/services/cartManager.dbclass.js';
 import {ProductManager} from '../dao/services/productManager.dbclass.js';
 import { auth } from '../utils.js';
+import config from "../config/config.js";
 
 const producto = new ProductManager();
 const cart = new CartManager('./carrito.json');
 const router = Router();
 
-const baseURL = 'http://localhost:3030/'
+const baseURL = `${config.serverURL}:${config.port}`;
 
 router.get('/signup', (req, res) => {
     res.render('signup');

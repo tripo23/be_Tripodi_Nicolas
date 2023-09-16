@@ -62,7 +62,7 @@ const httpServer = server.listen(ws_port, () => {
 
 const wss = new Server(httpServer, {
     cors: {
-        origin: `http://localhost:${port}`,
+        origin: `${config.serverURL}:${port}`,
         methods: ["GET", "POST", "PUT", "DELETE"],
         allowedHeaders: 'Content-Type, Authorization',
     }
@@ -89,12 +89,16 @@ const hbs = exphbs.create({
   helpers: {
     capitalize: function (str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+    },
+    dynamicURL: function (path) {
+      const serverURL = process.env.SERVER_URL || 'http://localhost:3030'; // Use environment variable or a default value
+      return `${serverURL}${path}`;
+    },
   },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
-    allowProtoMethodsByDefault: true
-  }
+    allowProtoMethodsByDefault: true,
+  },
 });
 
 // Engine setup
