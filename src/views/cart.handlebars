@@ -59,7 +59,8 @@
   <script>
     function checkout() {
       const cartId = document.getElementById('cartId').value;
-      const url = `{{dynamicURL '/api/carts/'}}{{cartId}}'/purchase'`;
+      const url = `{{dynamicURL '/api/carts/'}}{{cartId}}'/purchase/'`;
+      
       window.location.href = url;
     }
   </script>
