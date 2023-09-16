@@ -2,7 +2,7 @@ import { generateHashedToken, calculateExpiryTime, sendResetPasswordEmail, creat
 import userModel from "../models/users.model.js";
 import config from '../../config/config.js';
 
-const baseURL = `${config.serverURL}:${config.port}`;
+const baseURL = `${config.serverURL}`;
 
 export const resetPassword = async (req, res) => {
     const email = req.body.email;
@@ -26,7 +26,7 @@ export const resetPassword = async (req, res) => {
 
         // Send the reset email with the link including the reset token as a query parameter
         const encodedToken = encodeURIComponent(resetToken);
-        const resetTokenURL = `${config.serverURL}:${config.port}/setPassword/${email}/${encodedToken}`;
+        const resetTokenURL = `${baseURL}/setPassword/${email}/${encodedToken}`;
         sendResetPasswordEmail(email, resetTokenURL);
 
         // Redirect to a success page or show a success message

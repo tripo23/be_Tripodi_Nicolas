@@ -8,7 +8,7 @@ const producto = new ProductManager();
 const cart = new CartManager('./carrito.json');
 const router = Router();
 
-const baseURL = `${config.serverURL}:${config.port}`;
+const baseURL = `${config.serverURL}/`;
 
 router.get('/signup', (req, res) => {
     res.render('signup');
