@@ -148,7 +148,7 @@
 
       const cartId = document.getElementById('cartId').value;
       const urlCart = `{{dynamicURL '/api/carts/'}}{{cart}}`;
-      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cart}}'/product/'{{productId}}`;
+      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cart}}/product/{$productId}`;
 
       fetch(fetchURL, {
         method: 'POST',
