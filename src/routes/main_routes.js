@@ -5,8 +5,7 @@ import config from "../config/config.js";
 
 const producto = new ProductManager();
 const router = Router();
-
-const baseURL = `${config.serverURL}:${config.port}`;
+const baseURL = `${config.serverURL}/`;
 
 
 router.get('/', auth, async (req, res) => {
