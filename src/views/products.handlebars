@@ -117,7 +117,7 @@
     </div>
   </nav>
 
-
+<p>Dynamic URL: {{dynamicURL}}</p>
   <div class="container">
     <div class="row">
       {{#each products}}
@@ -150,6 +150,7 @@
 
       const cartId = document.getElementById('cartId').value;
       const dynamicURL = document.getElementById('dynamicURL').textContent;
+      console.log(dynamicURL)
       const urlCart = `${dynamicURL}/api/carts/${cartId}`;
       const fetchURL = `${dynamicURL}/api/carts/${cartId}/product/${productId}`;
 
