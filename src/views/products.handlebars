@@ -152,7 +152,7 @@
       const dynamicURL = document.getElementById('dynamicURL').textContent;
       console.log(dynamicURL)
       const urlCart = `{{dynamicURL '/api/carts/'}}{{cartId}}`;
-      const fetchURL = `${dynamicURL}/api/carts/${cartId}/product/${productId}`;
+      const fetchURL = `{{dynamicURL '/api/carts/'}}{{cartId}}'/product/'{{productId}}`;
 
       fetch(fetchURL, {
         method: 'POST',
