@@ -149,7 +149,7 @@
     function addToCart(productId) {
 
       const cartId = document.getElementById('cartId').value;
-      const dynamicURL = document.getElementById('dynamicURL').value;
+      const dynamicURL = document.getElementById('dynamicURL').textContent;
       const urlCart = `${dynamicURL}/api/carts/${cartId}`;
       const fetchURL = `${dynamicURL}/api/carts/${cartId}/product/${productId}`;
 
