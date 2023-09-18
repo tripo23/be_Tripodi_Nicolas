@@ -132,7 +132,7 @@ export const addProductFromView = async (req, res) => {
 }
 
 export const productManager = async (req, res) => {
-    res.render('productManager', { email: req.session.user });
+    res.render('productmanager', { email: req.session.user });
 }
 
 export const fakeProduct = async (req, res) => {
