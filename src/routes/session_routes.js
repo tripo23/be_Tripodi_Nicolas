@@ -42,7 +42,7 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'login' 
         } catch (error) {
             console.error('Error updating user last connection:', error);
         }
-        if (req.user.email === 'adminCoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
+        if (req.user.email === 'admincoder@coder.com') { // si es la cuenta de la consigna, harcodeo el rol admin.
             req.session.role = 'admin';
         }
         if (req.session.role == 'admin') {
