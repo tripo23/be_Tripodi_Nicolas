@@ -128,7 +128,8 @@ export const addProductFromView = async (req, res) => {
     console.log(data);
     producto.addProduct(data);
     req.logger.info(`product added - ${new Date().toLocaleTimeString()}`);
-    res.status(200).json({ message: 'Producto enviado' });
+    //res.status(200).json({ message: 'Producto enviado' });
+    res.render('productmanager', { email: req.session.user, message: 'added' });
 }
 
 export const productManager = async (req, res) => {
