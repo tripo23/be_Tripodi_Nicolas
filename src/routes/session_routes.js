@@ -46,7 +46,7 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'login' 
             req.session.role = 'admin';
         }
         if (req.session.role == 'admin') {
-            res.redirect(baseURL + 'api/productmanager');
+            res.redirect(baseURL + 'api/productmgr');
         } else {
             res.redirect(baseURL + 'products');
         }
