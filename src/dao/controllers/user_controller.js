@@ -126,14 +126,19 @@ export const setNewPassword = async (req, res) => {
 
 export const selectRole = async (req, res) => {
     const uid = req.params.uid
-    const loggedUser = await userModel.findOne({ email: req.session.user });
-    const user = await userModel.findOne({ _id: uid });
-    //if ((user.doc_account && user.doc_address && user.doc_id) || user.role == 'admin') {
-    if (loggedUser.role == 'admin') {
-        res.render('selectRole', { user: user, id: uid });
-    } else {
+    if (!req.session.user) {
         res.render('forbidden');
+    } else {
+        const loggedUser = await userModel.findOne({ email: req.session.user });
+        const user = await userModel.findOne({ _id: uid });
+        //if ((user.doc_account && user.doc_address && user.doc_id) || user.role == 'admin') {
+        if (loggedUser.role == 'admin') {
+            res.render('selectRole', { user: user, id: uid });
+        } else {
+            res.render('forbidden');
+        }
     }
+
 }
 
 export const changeRole = async (req, res) => {
