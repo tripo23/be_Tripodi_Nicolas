@@ -45,7 +45,12 @@ const swaggerOptions = {
       info: {
           title: 'Documentación sistema ecommerce',
           description: 'Esta documentación cubre toda las APIs habilitadas para el sistema de ecommerce'
-      }
+      },
+      servers: [
+          {
+            url: `${config.serverURL}`, description: 'Server'
+          }
+      ]
   },
   apis: ['./docs/**/*.yaml'] // todos los archivos de configuración de rutas estarán aquí
 }
