@@ -127,7 +127,7 @@ export const setNewPassword = async (req, res) => {
 export const selectRole = async (req, res) => {
     const uid = req.params.uid
     const user = await userModel.findOne({ _id: uid });
-    if (user.doc_account && user.doc_address && user.doc_id) {
+    if ((user.doc_account && user.doc_address && user.doc_id) || user.role == 'admin') {
         res.render('selectRole', { user: user, id: uid });
     } else {
         res.status(401).send('Usuario no autorizado por documentación incompleta, o en proceso de subida');
