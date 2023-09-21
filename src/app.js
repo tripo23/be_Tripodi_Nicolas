@@ -14,6 +14,8 @@ import { __dirname, errorsDict } from './utils.js';
 import { addLogger } from './dao/services/logger.service.js';
 
 import exphbs from 'express-handlebars';
+import * as path from 'path';
+
 
 // Importamos swaggerJsdoc y swaggerUiExpress
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -27,7 +29,6 @@ import viewRoutes from './routes/view_routes.js'
 import ticketRoutes from './routes/tickets_routes.js'
 import sessionRoutes from './routes/session_routes.js'
 import messageModel from './dao/models/messages.model.js';
-
 
 const port = parseInt(config.port) || 3030;
 const ws_port = parseInt(config.ws_port) || 8080;
@@ -52,7 +53,7 @@ const swaggerOptions = {
           }
       ]
   },
-  apis: ['./docs/**/*.yaml'] // todos los archivos de configuración de rutas estarán aquí
+  apis: [path.resolve(__dirname, 'docs', '**', '*.yaml')] // Use an absolute path
 }
 const specs = swaggerJsdoc(swaggerOptions);
 
