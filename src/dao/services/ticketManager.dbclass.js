@@ -16,7 +16,7 @@ class TicketManager {
             code: generateTicketCode(),
             purchase_datetime: new Date().toISOString(),
             amount: data.amount,
-            purchaser: 'test',
+            purchaser: data.purchaser,
             products:[]
         };
         const process = await ticketModel.create(newTicket);
@@ -35,6 +35,11 @@ class TicketManager {
             found = TicketManager.notFound;
         }
         return found
+    }
+
+    getTickets = async () => {
+        const tickets = await ticketModel.find();
+        return tickets;
     }
 
     addProducts = async (tid, product ) => {

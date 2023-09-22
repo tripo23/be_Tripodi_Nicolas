@@ -1,0 +1,87 @@
+paths:
+  /api/tickets:
+    get:
+      summary: Retorna la lista completa de tickets
+      tags:
+        - Tickets
+      responses:
+        "200":
+          description: 'Devuelve los tickets'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tickets'
+        "404":
+          description: 'No hay tickets'
+
+  /api/tickets/{tid}:
+    get:
+      summary: Retorna un ticket dado
+      tags:
+        - Tickets
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+          required: true
+          description: id del ticket
+      responses:
+        "200":
+          description: 'Devuelve el ticket'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tickets'
+        "404":
+          description: 'No se encontró un ticket con este ID'
+
+components:
+  schemas:
+    Tickets:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The unique code of the ticket.
+        purchase_datetime:
+          type: string
+          format: date-time
+          description: The date and time of the ticket purchase.
+        amount:
+          type: number
+          description: The total amount of the ticket.
+        purchaser:
+          type: string
+          description: The name of the purchaser.
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                format: uuid
+                description: The ID of the associated product.
+              quantity:
+                type: integer
+                description: The quantity of the associated product in the ticket.
+                default: 1
+      required:
+        - code
+        - purchase_datetime
+        - amount
+        - purchaser
+        - products
+      example:
+        code: "ABC123"
+        purchase_datetime: "2023-09-16T12:00:00Z"
+        amount: 50.0
+        purchaser: "John Doe"
+        products:
+          - product: "product_id_1"
+            quantity: 2
+          - product: "product_id_2"
+            quantity: 1

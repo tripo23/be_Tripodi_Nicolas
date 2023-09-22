@@ -123,6 +123,12 @@ class ProductManager {
         }
     };
 
+    getStock = async (data) => {
+        await this.load();
+        const current = await this.getProductById(data.pid);
+        return current ? current.stock : 0;
+    }
+
     decreaseStock = async (data) => {
         for (const item of data) {
             try {

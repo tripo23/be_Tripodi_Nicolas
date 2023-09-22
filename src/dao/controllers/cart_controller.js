@@ -36,37 +36,43 @@ export const purchase = async (req, res) => {
                 quantity,
             };
         });
+        console.log('extracted data: ', extractedData);
 
-        //Traigo los productos con stock.
-        const hasStock = await extractedData.reduce(async (result, item) => {
-            const hasSufficientStock = await producto.checkStock({ pid: item.pid, quantity: item.quantity });
-            if (hasSufficientStock) {
-                const previousResult = await result;
-                return [...previousResult, item];
+        // reviso si hay stock disponible
+        const itemsToPurchase = []
+        const itemsWithoutStock= []
+        for (const item of extractedData) {
+
+            const stock = await producto.getStock(item);
+            console.log('stock: ', stock);
+            if (stock >= item.quantity) {
+                itemsToPurchase.push(item);
+            } else {
+                if (stock == 0) {
+                    itemsWithoutStock.push(item);
+                } else {
+                    const partialStockToPurchase = {pid: item.pid, quantity: stock}
+                    const pendingStockToBuy = item.quantity - stock
+                    const partialStockToCart = {pid: item.pid, quantity: pendingStockToBuy }
+
+                    itemsToPurchase.push(partialStockToPurchase);
+                    itemsWithoutStock.push(partialStockToCart);
+                }
             }
-            return result;
-        }, Promise.resolve([]));
+        }
 
-        if (hasStock.length === 0) {
+        if (itemsToPurchase.length === 0) {
             req.logger.error(`no products with stock - ${new Date().toLocaleTimeString()}`);
             res.status(404).json({ error: "No hay stock suficiente para ninguno de los productos seleccionados" });
             return;
         }
 
-        //Hago lo propio para los que no tienen stock suficiente.
-        const itemsWithoutStock = await (async () => {
-            return extractedData.reduce(async (accumulatorPromise, item) => {
-                const accumulator = await accumulatorPromise;
-                const hasStock = await producto.checkStock(item);
-                if (!hasStock) {
-                    accumulator.push(item);
-                }
-                return accumulator;
-            }, []);
-        })();
+        console.log('itemsToPurchase: ', itemsToPurchase);
+        console.log('itemsWithoutStock: ', itemsWithoutStock);
+        
 
         // Resto el stock de los productos agregados.
-        await producto.decreaseStock(hasStock);
+        await producto.decreaseStock(itemsToPurchase);
         req.logger.info(`stock consumed - ${new Date().toLocaleTimeString()}`);
 
         // Vacío el carrito 
@@ -85,7 +91,7 @@ export const purchase = async (req, res) => {
 
         // Calculo el total del carrito
         let total = 0;
-        for (const item of hasStock) {
+        for (const item of itemsToPurchase) {
             const unitPrice = await producto.checkPrice(item.pid)
             const pricePerProduct = parseInt(unitPrice) * parseInt(item.quantity);
             total += pricePerProduct
@@ -93,13 +99,14 @@ export const purchase = async (req, res) => {
 
         // Mando a crear el ticket
         const ticketData = {
+            purchaser: req.session.user,
             amount: total,
         }
         const tid = await ticket.newTicket(ticketData);
         req.logger.info(`ticket created - ${new Date().toLocaleTimeString()}`);
 
         //Agrego los productos al ticket
-        for (const item of hasStock) {
+        for (const item of itemsToPurchase) {
             await ticket.addProducts(tid, item);
         }
 
@@ -245,4 +252,14 @@ export const sendTicketByMail = async (req, res, data) => {
     `
     });
 
+}
+
+export const getTicketById = async (req, res) => {
+    const currentTicket = await ticket.getTicketById(req.params.tid);
+    res.status(200).send(currentTicket);
+}
+
+export const getTickets = async (req, res) => {
+    const tickets = await ticket.getTickets();
+    !tickets? res.status(404).json({ error: 'No hay tickets' }) : res.status(200).send(tickets);
 }

@@ -131,7 +131,7 @@ server.use(passport.session());
 // Endpoints API REST
 server.use('/api', routerProd);
 server.use('/api', routerCart);
-server.use('/', ticketRoutes);
+server.use('/api', ticketRoutes);
 server.use('/', mainRoutes);
 server.use('/', userRoutes);
 server.use('/', sessionRoutes);
