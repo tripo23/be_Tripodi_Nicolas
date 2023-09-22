@@ -27,7 +27,10 @@ const config = {
     secret_session: process.env.secret_session,
     persistence: process.env.persistence,
     user_transport: process.env.user_transport,
-    pass_transport: process.env.pass_transport
+    pass_transport: process.env.pass_transport,
+    gh_clientid: process.env.GH_clientID,
+    gh_clientsecret: process.env.GH_clientSecret,
+    gh_callbackurl: process.env.GH_callbackUrl
 }
 
 export default config;

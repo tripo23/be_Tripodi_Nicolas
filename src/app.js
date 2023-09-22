@@ -116,7 +116,7 @@ server.use(session({
   store: mongoStore.create({
     mongoUrl: mongoose_url,
     mongoOptions: {useNewUrlParser:true, useUnifiedTopology:true},
-    ttl: 100
+    ttl: 3600
   }),
   secret: secret_session,
   resave: true,

@@ -59,8 +59,7 @@ router.get('/sessions/github', passport.authenticate('github', { scope: ['user:e
 
 router.get('/api/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
 
-    // req.session.userValidated = true;
-    // req.session.errorMessage = '';
+    console.log('Github callback');
     req.session.user = req.user.email;
     req.session.role = req.user.role;
     req.session.cart = req.user.cart;

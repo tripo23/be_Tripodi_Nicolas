@@ -1,4 +1,5 @@
 import {} from 'dotenv/config';
+import config from '../config/config.js';
 import GithubStrategy from 'passport-github2';
 import passport from 'passport';
 import local from 'passport-local';
@@ -63,13 +64,14 @@ const initializePassport = () => {
 
     //Estrategia GitHub
     const githubData = {
-        clientID: process.env.GH_clientID,
-        clientSecret: process.env.GH_clientSecret,
-        callbackUrl: process.env.GH_callbackUrl,
-        scope: ['user:email'] 
+        clientID: 'Iv1.39716288a906b8ec',
+        clientSecret: '08f6adb84680b8b3ad423b0ac2bdb8429ec482c9',
+        callbackUrl: 'http://localhost:3030/api/sessions/githubcallback',
+        scope: ['user:email', 'repo'] 
     };
 
     const verifyAuthGithub = async (accessToken, refreshToken, profile, done) => {
+        console.log('verify github');
         try {
             let user = await userModel.findOne({ email: profile._json.email });
 
