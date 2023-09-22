@@ -64,9 +64,9 @@ const initializePassport = () => {
 
     //Estrategia GitHub
     const githubData = {
-        clientID: 'Iv1.39716288a906b8ec',
-        clientSecret: '08f6adb84680b8b3ad423b0ac2bdb8429ec482c9',
-        callbackUrl: 'http://localhost:3030/api/sessions/githubcallback',
+        clientID: config.gh_clientid,
+        clientSecret: config.gh_clientsecret,
+        callbackUrl: config.gh_callbackurl,
         scope: ['user:email', 'repo'] 
     };
 
